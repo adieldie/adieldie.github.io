@@ -1,0 +1,23 @@
+/* Original visual direction: luminous computation on a quiet, high-contrast canvas. */
+:root{--bg:#090e12;--accent:#a2f4d2;--text:#f1f8f7;--line:#30444b}
+body{background:var(--bg)}
+html[data-scroll-scenes] .motion-hero-stage{background:radial-gradient(ellipse at 77% 38%,#754af51a,transparent 54%),radial-gradient(ellipse at var(--hero-ambient-x,60%) 57%,#13edc419,transparent 64%)}
+html[data-scroll-scenes] .motion-hero h1{font-family:Arial,Helvetica,sans-serif;font-style:normal;font-weight:600;font-size:clamp(54px,6.2vw,86px);line-height:1.04;letter-spacing:-4.5px;text-shadow:0 3px 24px #080d13b3}
+html[data-scroll-scenes] .motion-hero h1 span{font-style:normal;font-weight:600;color:#abf8df}
+.hero-description{color:#c3d6d6}
+.hero .primary{background:linear-gradient(110deg,#b5ffe2,#73e2ed);color:#072122;border-color:#99ffdf;box-shadow:0 0 26px #53efd923,inset 0 0 0 1px #c6fff75c}
+.hero .primary:hover{background:linear-gradient(110deg,#d2ffed,#a8f4ff);box-shadow:0 0 30px #53efd940}
+.hero .eyebrow{color:#a4fbe7}
+.hero .profile-photo{border-color:#72efd3;box-shadow:0 0 0 5px #122a28,0 0 20px #50d8c324}
+.flow-diagram{border-color:#66c9c284;box-shadow:inset 0 0 38px #61e4d608,0 0 26px #865aed08}
+.flow-node.is-active{box-shadow:0 0 21px #5eedbb30}
+.samples .eyebrow,.contact .eyebrow{color:#a4fbe7}
+.robot-game{border-color:#559a9d94;box-shadow:0 0 32px #33d1c609}
+.contact-arrow{border-color:#73d9ce;background:radial-gradient(ellipse at 30% 30%,#74e5ca14,#7354df0c)}
+@media(max-width:760px){html[data-scroll-scenes] .motion-hero h1{font-size:clamp(40px,8.7vw,62px);letter-spacing:-2.1px;line-height:1.05}.hero-description{font-size:14px}.hero .primary{box-shadow:0 0 17px #53efd920}}
+@media(prefers-reduced-motion:reduce){.hero .primary{transition:none}}
+/* Portrait remains in the introduction, never crowds the fixed navigation. */
+.hero .profile-photo{width:126px;height:126px;flex:0 0 126px}
+.hero .hero-intro{gap:23px}
+@media(max-width:760px){.hero .profile-photo{width:96px;height:96px;flex-basis:96px}.hero .hero-intro{gap:17px}}
+@media(max-width:380px){.hero .profile-photo{width:86px;height:86px;flex-basis:86px}.hero .hero-intro{gap:13px}}

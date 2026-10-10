@@ -193,22 +193,22 @@ h1{font-size:clamp(63px,6.2vw,92px);letter-spacing:-4.3px}
 /* Contact stays one compact block, with quiet text actions. */
 .personal-contact{padding:20px 0;margin:26px 0 18px}.contact-number{font-size:24px;margin-bottom:10px}.personal-actions{gap:8px 24px}.personal-actions .text-link{background:none;color:#b8d6c4;padding:10px 0;min-height:44px;font-size:12px;border:0;white-space:nowrap}.personal-contact #copy-phone-status{font-size:10px;margin-top:3px;min-height:0}.personal-contact #copy-phone-status:empty{margin:0;min-height:0}.contact-links{margin-top:0}.contact-links .text-link{font-size:12px;min-height:44px;display:inline-flex;align-items:center}@media(max-width:600px){.personal-actions{gap:2px 20px}.personal-actions .text-link{font-size:11px}.contact-number{font-size:22px}}
 
-/* Sculpture-only neon material: small halo, no page-wide bloom or color shift. */
+/* Sculpture-only neon material: cyan-mint emission and a localized violet reflection. */
 #inicio .visual.sculpture-neon:before {
-  background: radial-gradient(ellipse at 59% 46%, #28e79519 0%, #24caac0b 33%, transparent 64%);
+  background: radial-gradient(ellipse at 56% 43%, #24efce20 0%, #25cfe80c 34%, transparent 64%), radial-gradient(ellipse at 75% 62%, #945eff16, transparent 42%);
 }
 #sculpture,
 #inicio .sculpture-fallback {
-  filter: drop-shadow(0 0 9px #39f9ab38);
+  filter: drop-shadow(0 0 10px #32ffd74a);
 }
-#inicio .sculpture-fallback #metal stop:first-child { stop-color: #e0ffee; }
-#inicio .sculpture-fallback #metal stop:nth-child(2) { stop-color: #39e89e; }
-#inicio .sculpture-fallback #metal stop:last-child { stop-color: #063c2a; }
-#inicio .visual.sculpture-neon .visual-orbit { border-color: #5dbd9630; }
-#inicio .visual.sculpture-neon .visual-orbit:after { border-color: #5dbd9619; }
+#inicio .sculpture-fallback #metal stop:first-child { stop-color: #e0fffb; }
+#inicio .sculpture-fallback #metal stop:nth-child(2) { stop-color: #34fbd1; }
+#inicio .sculpture-fallback #metal stop:last-child { stop-color: #18354f; }
+#inicio .visual.sculpture-neon .visual-orbit { border-color: #58e4d33a; }
+#inicio .visual.sculpture-neon .visual-orbit:after { border-color: #9b79f923; }
 @media (max-width:760px) {
   #sculpture,
-  #inicio .sculpture-fallback { filter: drop-shadow(0 0 6px #39f9ab30); }
+  #inicio .sculpture-fallback { filter: drop-shadow(0 0 6px #32ffd740); }
 }
 /* Software 3D shares the sculpture's existing scroll transform and halo. */
 #inicio .visual.software3d #sculpture,

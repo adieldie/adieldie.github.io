@@ -22,10 +22,13 @@ export function initScrollScenes() {
   const preference = matchMedia('(prefers-reduced-motion: reduce)');
   const compact = matchMedia('(max-width: 760px)');
   const records = [];
-  let frame = 0, measureNeeded = true, height = innerHeight;
+  let frame = 0, measureNeeded = true, height = innerHeight, headerHeight = 0;
   let heroTop = 0, heroRange = 1, storyTop = 0, storyHeight = 1;
   let projectTop = 0, projectHeight = 1;
   let heroFooterTop = 0, heroFooterHeight = 1;
+  let stackTop = 0, stackHeight = 1;
+  const stackStrip = document.querySelector('.stack-strip');
+  const stackItems = [...(stackStrip?.querySelectorAll('.wrap > span') || [])];
 
   // Move existing nodes, rather than cloning content or replacing controls.
   // All IDs, event handlers, focus targets, and hash links retain their identity.
@@ -110,11 +113,16 @@ export function initScrollScenes() {
     height = innerHeight;
     const reduced = preference.matches;
     const mobile = compact.matches;
+    const header = document.querySelector('.header');
+    const configuredHeader = parseFloat(getComputedStyle(root).getPropertyValue('--header-height')) || 0;
+    headerHeight = header && getComputedStyle(header).position === 'fixed' ? header.offsetHeight : configuredHeader;
+    const availableHeight = Math.max(1, height - headerHeight);
+    hero.style.setProperty('--scene-header-height', headerHeight + 'px');
     root.classList.toggle('scroll-scenes-reduced', reduced);
     root.classList.toggle('scroll-scenes-mobile', mobile);
     // A small screen gets natural flow with only modest parallax: no tall
     // pinned panel can trap its controls outside the available viewport.
-    let canPin = !reduced && !mobile && height >= 680;
+    let canPin = !reduced && !mobile && availableHeight >= 650;
     root.classList.toggle('scroll-scenes-pinned', canPin);
     hero.style.removeProperty('--hero-scene-height');
     hero.style.removeProperty('--hero-stage-height');
@@ -122,10 +130,10 @@ export function initScrollScenes() {
     const contentHeight = Math.max(copy?.offsetHeight || 0, 620);
     // Browser zoom / larger text can make a scene taller than its screen.
     // Prefer ordinary document flow rather than pinning unreachable controls.
-    canPin = canPin && contentHeight <= height;
+    canPin = canPin && contentHeight <= availableHeight;
     root.classList.toggle('scroll-scenes-pinned', canPin);
-    const stageHeight = Math.max(contentHeight, Math.min(height, 940));
-    const pinRoom = canPin ? Math.round(height * .74) : 0;
+    const stageHeight = Math.max(contentHeight, Math.min(availableHeight, 940));
+    const pinRoom = canPin ? Math.round(availableHeight * .74) : 0;
     hero.style.setProperty('--hero-stage-height', stageHeight + 'px');
     hero.style.setProperty('--hero-scene-height', stageHeight + pinRoom + 'px');
     heroTop = topInDocument(hero);
@@ -133,6 +141,19 @@ export function initScrollScenes() {
     if (heroFooter) {
       heroFooterTop = topInDocument(heroFooter);
       heroFooterHeight = heroFooter.offsetHeight;
+    }
+    if (stackStrip) {
+      // Reserve real layout space for the full decorative canvas tail, plus
+      // the strip's maximum upward travel. The technology text never crosses
+      // the descending object, even though the object can cross the hero seam.
+      const visual = hero.querySelector('.visual');
+      const factor = reduced ? 0 : mobile ? .38 : 1;
+      const descent = Math.min(240, Math.max(160, height * .24)) * factor;
+      const visualBottom = (visual?.offsetTop || 0) + (visual?.offsetHeight || 0);
+      const clearance = Math.max(0, visualBottom + descent - stage.offsetHeight - heroFooterHeight + 74 * factor + 28);
+      stackStrip.style.setProperty('--stack-clearance', Math.ceil(clearance) + 'px');
+      stackTop = topInDocument(stackStrip);
+      stackHeight = stackStrip.offsetHeight;
     }
     records.forEach(record => {
       record.top = topInDocument(record.element);
@@ -150,7 +171,7 @@ export function initScrollScenes() {
     const reduced = preference.matches;
     const mobile = compact.matches;
     const factor = reduced ? 0 : mobile ? .38 : 1;
-    const heroProgress = clamp((scroll - heroTop) / heroRange);
+    const heroProgress = clamp((scroll + headerHeight - heroTop) / heroRange);
     const easedHero = ease(heroProgress);
     hero.dataset.sceneProgress = heroProgress.toFixed(4);
     hero.style.setProperty('--hero-copy-y', (-112 * easedHero * factor).toFixed(2) + 'px');
@@ -167,6 +188,23 @@ export function initScrollScenes() {
       heroFooter.dataset.sceneProgress = progress.toFixed(4);
       heroFooter.style.setProperty('--footer-text-y', footerY.toFixed(2) + 'px');
       heroFooter.style.setProperty('--footer-text-opacity', (reduced ? 1 : .74 + .26 * ease(clamp(progress / .32))).toFixed(4));
+    }
+    if (stackStrip) {
+      // A separate document-flow passage: emerge, stay readable, then leave.
+      // Only decorative paint and inline content move; the strip never pins.
+      const progress = clamp((scroll + height - stackTop) / (height + stackHeight));
+      const arrival = ease(clamp(progress / .24));
+      const departure = 1 - ease(clamp((progress - .73) / .27));
+      const rise = (40 - 98 * ease(progress)) * factor;
+      stackStrip.dataset.sceneProgress = progress.toFixed(4);
+      stackStrip.style.setProperty('--stack-y', rise.toFixed(2) + 'px');
+      stackStrip.style.setProperty('--stack-opacity', (reduced ? 1 : arrival * departure).toFixed(4));
+      stackItems.forEach((item, index) => {
+        const local = clamp((progress - index * .012) / (1 - index * .012));
+        item.dataset.scrollProgress = local.toFixed(4);
+        item.style.setProperty('--stack-item-y', ((18 - 34 * ease(local)) * factor).toFixed(2) + 'px');
+        item.style.setProperty('--stack-item-opacity', (reduced ? 1 : .7 + .3 * ease(clamp(local / .24))).toFixed(4));
+      });
     }
     heroWords.forEach((word, index) => {
       const local = ease(clamp(heroProgress * 1.16 - index * .035));

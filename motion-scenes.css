@@ -35,7 +35,7 @@ html.scroll-scenes-pinned .motion-hero-track {
 }
 html.scroll-scenes-pinned .motion-hero-stage {
   position: sticky;
-  top: 0;
+  top: var(--scene-header-height, 0px);
   height: var(--hero-stage-height);
   min-height: 0;
 }
@@ -93,10 +93,34 @@ html[data-scroll-scenes] .motion-hero > .hero-bottom > span {
 /* The sculpture may cross the section seam; text and links stay above it.
    Avoid a new stacking context around the strip background, which would
    otherwise act like a hard crop at the exact boundary we are crossing. */
-html[data-scroll-scenes] .motion-hero + .stack-strip { position: relative; }
+html[data-scroll-scenes] .motion-hero + .stack-strip {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  isolation: auto;
+  overflow: visible;
+  transform: none;
+  opacity: 1;
+  background: transparent;
+  border-color: transparent;
+  margin-top: var(--stack-clearance, 0px);
+}
+/* No slab or rules can cross the sculpture; breathing room is real layout. */
+html[data-scroll-scenes] .motion-hero + .stack-strip::before { content: none; }
 html[data-scroll-scenes] .motion-hero + .stack-strip > .wrap {
   position: relative;
   z-index: 2;
+  transform: translate3d(0, var(--stack-y, 0px), 0);
+  opacity: var(--stack-opacity, 1);
+  transition: none;
+}
+html[data-scroll-scenes] .motion-hero + .stack-strip > .wrap > span {
+  display: inline-block;
+  transform: translate3d(0, var(--stack-item-y, 0px), 0);
+  opacity: var(--stack-item-opacity, 1);
+  color: #d6e2d9;
+  text-shadow: 0 1px 5px #0b110e, 0 0 12px #0b110e;
+  transition: none;
 }
 html[data-scroll-scenes] .automation-story { z-index: 2; }
 
@@ -114,7 +138,7 @@ html[data-scroll-scenes] .projects > .project-index {
 /* Each chapter keeps an anchor in view, while real content scrolls past it. */
 html[data-scroll-scenes] .automation-sticky {
   position: sticky;
-  top: 42px;
+  top: calc(var(--header-height, 0px) + 42px);
   align-self: start;
 }
 html[data-scroll-scenes] .automation-sticky > h2 {
@@ -131,7 +155,7 @@ html[data-scroll-scenes] .motion-project-scene {
 }
 html[data-scroll-scenes] .motion-project-scene > .section-heading {
   position: sticky;
-  top: 65px;
+  top: calc(var(--header-height, 0px) + 65px);
   display: block;
   margin: 0;
   transform: translate3d(0, var(--chapter-title-y, 0px), 0);
@@ -172,7 +196,7 @@ html[data-scroll-scenes] .motion-project-scene .card-body h3 {
 }
 html[data-scroll-scenes] .motion-about-scene > div:first-child {
   position: sticky;
-  top: 72px;
+  top: calc(var(--header-height, 0px) + 72px);
   align-self: start;
 }
 html[data-scroll-scenes] .motion-about-scene .about-detail {
@@ -204,7 +228,7 @@ html[data-scroll-scenes] .motion-about-scene .about-detail {
   html[data-scroll-scenes] .motion-hero .hero-bottom { padding-inline: 18px; }
   html[data-scroll-scenes] .automation-sticky {
     position: sticky;
-    top: 0;
+    top: var(--header-height, 0px);
     z-index: 3;
     background: linear-gradient(var(--bg) 94%, transparent);
     padding: 16px 0 22px;
@@ -253,6 +277,9 @@ html.scroll-scenes-reduced .visual,
 html.scroll-scenes-reduced #sculpture,
 html.scroll-scenes-reduced .sculpture-fallback,
 html.scroll-scenes-reduced .motion-hero > .hero-bottom > span,
+html.scroll-scenes-reduced .stack-strip::before,
+html.scroll-scenes-reduced .stack-strip > .wrap,
+html.scroll-scenes-reduced .stack-strip > .wrap > span,
 html.scroll-scenes-reduced .automation-sticky > h2,
 html.scroll-scenes-reduced .motion-project-scene > .section-heading { transform: none !important; opacity: 1 !important; }
 html.scroll-scenes-reduced .automation-sticky,
@@ -261,5 +288,8 @@ html.scroll-scenes-reduced .motion-project-scene > .section-heading { position: 
 html.scroll-scenes-reduced .automation-step { min-height: 0; padding-block: 60px; }
 @media (prefers-reduced-motion: reduce) {
   html[data-scroll-scenes] .scene-actor,
-  html[data-scroll-scenes] .scene-word { transform: none !important; opacity: 1 !important; }
+  html[data-scroll-scenes] .scene-word,
+  html[data-scroll-scenes] .stack-strip::before,
+  html[data-scroll-scenes] .stack-strip > .wrap,
+  html[data-scroll-scenes] .stack-strip > .wrap > span { transform: none !important; opacity: 1 !important; }
 }

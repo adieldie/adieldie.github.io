@@ -1,8 +1,9 @@
-import { initPlatformer } from './platformer.js?v=20261010-12';
-import { initScrollScenes } from './motion-scenes.js?v=20261010-12';
-import { startSculpture } from './sculpture.js?v=20261010-12';
-import { projects } from './projects.js?v=20261010-12';
-import { filterProjects } from './project-utils.js?v=20261010-12';
+import { initTheme } from './theme.js?v=20261010-13';
+import { initPlatformer } from './platformer.js?v=20261010-13';
+import { initScrollScenes } from './motion-scenes.js?v=20261010-13';
+import { startSculpture } from './sculpture.js?v=20261010-13';
+import { projects } from './projects.js?v=20261010-13';
+import { filterProjects } from './project-utils.js?v=20261010-13';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -47,12 +48,13 @@ function render(){
  if(!found.length)$('project-index').append(el('p','empty-results','Nenhum projeto com esses termos. Tente outra busca ou selecione “Todos”.'));
 }
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});render();}));$('project-search').addEventListener('input',render);$('total-count').textContent=String(projects.length);$('year').textContent=String(new Date().getFullYear());render();
+initTheme();
 startSculpture($('sculpture'),$('motion-toggle'));
 
 initPlatformer($('robot-platformer'));
 initScrollScenes();
 
-import './offline.js?v=20261010-12';
+import './offline.js?v=20261010-13';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}

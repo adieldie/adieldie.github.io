@@ -37,7 +37,7 @@ No Actions workflow or extra permissions are necessary for branch deployment. Th
 
 ## Motion and 3D
 
-The geometric sculpture has 7,200 triangles, one draw call and no textures. Device pixel ratio is capped at 1.5 and animation is limited to approximately 30 frames per second. Rendering stops when offscreen, paused or in a hidden tab. Reduced-motion preference starts the sculpture paused and disables scroll/reveal transitions. A user may explicitly activate motion. WebGL unavailability or context loss switches to a real geometry-based Canvas2D renderer, capped at 16 fps, DPR 1 and an 800 px buffer. It keeps pause/reduced-motion/offscreen handling. If both drawing APIs fail, a static depth-sorted SVG projection remains available. The neon material uses key/fill lighting, rim emission and depth shading; its glow is scoped to the artwork. The decorative canvas is hidden from assistive technology; all information is ordinary HTML.
+The automation sculpture has 682 triangles, one draw call and no textures. Input records connect through a processing core to an output chart on a beveled base; it is an original conceptual illustration, not a real device. Device pixel ratio is capped at 1.5 and animation is limited to approximately 30 frames per second. Rendering stops when offscreen, paused or in a hidden tab. Reduced-motion preference starts the sculpture paused and disables scroll/reveal transitions. A user may explicitly activate motion. WebGL unavailability or context loss switches to a real geometry-based Canvas2D renderer, capped at 16 fps, DPR 1 and an 800 px buffer. It keeps pause/reduced-motion/offscreen handling. If both drawing APIs fail, a static depth-sorted SVG projection remains available. The neon material uses key/fill lighting, rim emission and depth shading; its glow is scoped to the artwork. The decorative canvas is hidden from assistive technology; all information is ordinary HTML.
 
 ## Recovery
 
@@ -64,3 +64,7 @@ The user explicitly saves the app using the offline button. A service worker pre
 Installation is offered only when the browser supplies its install prompt. Safari users receive the standard Add to Home Screen instruction. Storage can be cleared or evicted by the browser; this is not a permanent download guarantee. Real offline/device testing must be reported separately from unit or online checks.
 
 Public contact buttons use only the phone number explicitly approved by the owner. Clicking a link is left to the visitor; the site does not initiate calls or send messages automatically.
+
+## Color preference and fixed navigation
+
+The fixed header provides Sistema / Claro / Escuro. The default follows the system; only this local preference is stored. A pre-CSS bootstrap avoids a wrong-color first paint, and later system changes apply in automatic mode. Header height is measured for native anchor offsets. Illustrations and the playable canvas retain deliberate dark framing in light mode.

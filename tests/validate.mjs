@@ -38,3 +38,8 @@ console.log('PASS: platformer integration, continuous scroll controller and nati
 for(const name of ['automacao','dados','sistemas','estudos']){const path='assets/gallery/'+name+'.webp';await stat(path);assert.ok(sw.includes(path));}
 assert.ok(app.includes("project-tile")&&app.includes("image.loading='lazy'"));
 console.log('PASS: gallery artwork cached, lazy images and compact project tiles');
+const theme=await readFile('theme.js','utf8');
+assert.ok(html.indexOf("localStorage.getItem('adiel-portfolio-theme')")<html.indexOf('styles.css'),'Theme bootstrap precedes CSS');
+assert.ok(theme.includes("['system', 'light', 'dark']")&&theme.includes("portfolio:themechange"),'Three validated theme modes and change notification');
+assert.ok(sw.includes('theme.js?v='+release)&&sw.includes('theme.css?v='+release)&&sw.includes('reference-polish.css?v='+release),'New styling modules included offline');
+console.log('PASS: theme bootstrap, validated preference modes and offline theme assets');
