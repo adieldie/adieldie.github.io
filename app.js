@@ -1,7 +1,7 @@
-import { runSample } from './sample-utils.js?v=20261010-6';
-import { startSculpture } from './sculpture.js?v=20261010-6';
-import { projects } from './projects.js?v=20261010-6';
-import { filterProjects } from './project-utils.js?v=20261010-6';
+import { runSample } from './sample-utils.js?v=20261010-7';
+import { startSculpture } from './sculpture.js?v=20261010-7';
+import { projects } from './projects.js?v=20261010-7';
+import { filterProjects } from './project-utils.js?v=20261010-7';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
