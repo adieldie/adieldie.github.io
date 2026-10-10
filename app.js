@@ -1,6 +1,6 @@
-import { startSculpture } from './sculpture.js';
-import { projects } from './projects.js';
-import { filterProjects } from './project-utils.js';
+import { startSculpture } from './sculpture.js?v=20261010-3';
+import { projects } from './projects.js?v=20261010-3';
+import { filterProjects } from './project-utils.js?v=20261010-3';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
