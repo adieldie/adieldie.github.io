@@ -28,10 +28,17 @@ export function initScrollScenes() {
 
   // Move existing nodes, rather than cloning content or replacing controls.
   // All IDs, event handlers, focus targets, and hash links retain their identity.
+  const heroFooter = hero.querySelector('.hero-bottom');
   const stage = document.createElement('div');
   stage.className = 'motion-hero-stage';
   while (hero.firstChild) stage.append(hero.firstChild);
-  hero.append(stage);
+  const track = document.createElement('div');
+  track.className = 'motion-hero-track';
+  track.append(stage);
+  hero.append(track);
+  // The chapter footer belongs to document flow, outside the sticky scene.
+  // Its original node and text are retained, with no duplicate heading.
+  if (heroFooter) hero.append(heroFooter);
   hero.classList.add('motion-hero');
 
   const projectSection = document.querySelector('.projects');
@@ -142,9 +149,10 @@ export function initScrollScenes() {
     const easedHero = ease(heroProgress);
     hero.dataset.sceneProgress = heroProgress.toFixed(4);
     hero.style.setProperty('--hero-copy-y', (-112 * easedHero * factor).toFixed(2) + 'px');
-    hero.style.setProperty('--hero-visual-y', (-38 * easedHero * factor).toFixed(2) + 'px');
-    hero.style.setProperty('--hero-visual-scale', (1 - .085 * easedHero * factor).toFixed(4));
-    hero.style.setProperty('--hero-visual-rotate', (-7 * easedHero * factor).toFixed(3) + 'deg');
+    // Only the sculpture descends. Its label and pause button are siblings
+    // outside the transformed canvas/fallback, anchored to the stable scene.
+    const sculptureDescent = Math.min(240, Math.max(160, height * .24));
+    hero.style.setProperty('--hero-visual-y', (sculptureDescent * easedHero * factor).toFixed(2) + 'px');
     hero.style.setProperty('--hero-ambient-x', (50 + 18 * easedHero * factor).toFixed(2) + '%');
     heroWords.forEach((word, index) => {
       const local = ease(clamp(heroProgress * 1.16 - index * .035));

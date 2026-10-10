@@ -1,6 +1,6 @@
 # Adiel Alves · Portfolio
 
-Responsive, Portuguese-language portfolio built for GitHub Pages. Plain HTML, CSS and JavaScript, with no runtime package dependencies or external CDN. Includes 25 projects, accessible project details, filters and search, reduced-motion handling and a lightweight procedural WebGL sculpture with SVG fallback.
+Responsive, Portuguese-language portfolio built for GitHub Pages. Plain HTML, CSS and JavaScript, with no runtime package dependencies or external CDN. Includes 25 projects, accessible project details, filters and search, reduced-motion handling and a lightweight procedural WebGL sculpture with a projected-mesh SVG fallback.
 
 ## Preview and check
 
@@ -30,14 +30,14 @@ No Actions workflow or extra permissions are necessary for branch deployment. Th
 
 - Edit the public project array in `projects.js`.
 - Keep titles and IDs unique, category within Automação/Dados/Sistemas/Estudos, and honest status/outcome statements.
-- The three featured projects use `featured: true`.
+- The three featured projects use `featured: true`. The compact index uses four original editorial illustrations by category; they are not screenshots of production systems.
 - Never publish private repositories, secrets, unapproved contact information, identity documents, real customer records, or client names.
 - Contact URLs are in `index.html`. Repository links are individually included only when suitable for public attribution.
 - The site contains no tracking, forms, cookies, external fonts, or analytics.
 
 ## Motion and 3D
 
-The geometric sculpture has 7,200 triangles, one draw call and no textures. Device pixel ratio is capped at 1.5 and animation is limited to approximately 30 frames per second. Rendering stops when offscreen, paused or in a hidden tab. Reduced-motion preference starts the sculpture paused and disables scroll/reveal transitions. A user may explicitly activate motion. WebGL unavailability or context loss shows a static inline SVG. The decorative canvas is hidden from assistive technology; all information is ordinary HTML.
+The geometric sculpture has 7,200 triangles, one draw call and no textures. Device pixel ratio is capped at 1.5 and animation is limited to approximately 30 frames per second. Rendering stops when offscreen, paused or in a hidden tab. Reduced-motion preference starts the sculpture paused and disables scroll/reveal transitions. A user may explicitly activate motion. WebGL unavailability or context loss shows a static, depth-sorted SVG projection of the same mesh. The neon material uses key/fill lighting, rim emission and depth shading; its glow is scoped to the artwork. The decorative canvas is hidden from assistive technology; all information is ordinary HTML.
 
 ## Recovery
 
@@ -55,7 +55,7 @@ After any public CSS/JavaScript change, update the shared `?v=` release value on
 
 The page uses natural document scrolling, with pinned scene elements and reversible scroll-driven typography and cards. There is no wheel/touch interception or artificial scroll speed. Anchors and keyboard scrolling remain native. The three-stage automation story retains its sticky diagram on suitable desktop viewports; mobile, short screens and reduced motion use a simpler flow.
 
-The Amostras area contains BYTE / EM MISSÃO, an original JavaScript platformer. It includes three sectors, chips, obstacles, drones, checkpoints, lives, score, pause and restart. It starts only after the visitor chooses to play. Keyboard and touch controls are provided. There is no production API, analytics or stored player data. All visuals are original procedural artwork.
+The Amostras area contains BYTE / EM MISSÃO, an original JavaScript platformer. It includes three sectors, obstacles, drones, checkpoints, lives, score, pause and restart. Missions are grounded in the catalog: lot validation/confirmation, dependent print diagnostics with an ordered queue, and partial synchronization with recovery of only pending changes. Post-level summaries explain the analogy and preserve the real project status. It starts only after the visitor chooses to play. Keyboard and touch controls are provided. There is no production API, analytics or stored player data. All visuals are original procedural artwork.
 
 ## Offline support
 

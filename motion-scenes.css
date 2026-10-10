@@ -28,7 +28,8 @@ html[data-scroll-scenes] .motion-hero-stage {
   isolation: isolate;
   background: radial-gradient(ellipse at var(--hero-ambient-x, 50%) 40%, #23403738, transparent 67%);
 }
-html.scroll-scenes-pinned .motion-hero {
+html[data-scroll-scenes] .motion-hero-track { position: relative; }
+html.scroll-scenes-pinned .motion-hero-track {
   height: var(--hero-scene-height);
 }
 html.scroll-scenes-pinned .motion-hero-stage {
@@ -57,17 +58,35 @@ html[data-scroll-scenes] .motion-hero .visual {
   min-height: 0;
   right: -9%;
   top: 0;
-  transform: translate3d(0, var(--hero-visual-y, 0px), 0) scale(var(--hero-visual-scale, 1)) rotate(var(--hero-visual-rotate, 0deg));
-  transform-origin: 56% 48%;
+  transform: none;
+}
+/* Keep the control and descriptive label anchored; only the artwork moves. */
+html[data-scroll-scenes] .motion-hero #sculpture,
+html[data-scroll-scenes] .motion-hero .sculpture-fallback {
+  transform: translate3d(0, var(--hero-visual-y, 0px), 0);
 }
 html[data-scroll-scenes] .motion-hero .visual:before {
   background: radial-gradient(ellipse at 65% 40%, #456c5445, transparent 65%);
 }
 html[data-scroll-scenes] .motion-hero .visual-label { bottom: 98px; }
-html[data-scroll-scenes] .motion-hero .motion-toggle { bottom: 141px; }
-html[data-scroll-scenes] .motion-hero .hero-bottom {
-  background: linear-gradient(transparent, var(--bg) 28%);
+html[data-scroll-scenes] .motion-hero .motion-toggle { bottom: 141px; z-index: 4; transform: none; }
+html[data-scroll-scenes] .motion-hero > .hero-bottom {
+  position: relative;
+  inset: auto;
+  margin-top: 0;
+  background: var(--bg);
   padding-inline: 26px;
+  transform: none;
+}
+/* The full project index and its controls always scroll in document flow.
+   Only the separate, approved editorial feature heading is a sticky anchor. */
+html[data-scroll-scenes] .projects > .index-heading,
+html[data-scroll-scenes] .projects > .project-tools,
+html[data-scroll-scenes] .projects > .result-count,
+html[data-scroll-scenes] .projects > .project-index {
+  position: relative;
+  inset: auto;
+  transform: none;
 }
 
 /* Each chapter keeps an anchor in view, while real content scrolls past it. */
@@ -209,6 +228,8 @@ html.scroll-scenes-reduced .scene-actor,
 html.scroll-scenes-reduced .scene-word,
 html.scroll-scenes-reduced .hero-copy,
 html.scroll-scenes-reduced .visual,
+html.scroll-scenes-reduced #sculpture,
+html.scroll-scenes-reduced .sculpture-fallback,
 html.scroll-scenes-reduced .automation-sticky > h2,
 html.scroll-scenes-reduced .motion-project-scene > .section-heading { transform: none !important; opacity: 1 !important; }
 html.scroll-scenes-reduced .automation-sticky,

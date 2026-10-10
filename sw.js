@@ -1,6 +1,6 @@
-const VERSION='adiel-portfolio-20261010-10';
+const VERSION='adiel-portfolio-20261010-11';
 const BASE=new URL('./',self.location.href);
-const FILES=['./','index.html','styles.css?v=20261010-10','app.js?v=20261010-10','projects.js?v=20261010-10','project-utils.js?v=20261010-10','sculpture.js?v=20261010-10','platformer.js?v=20261010-10','platformer.css?v=20261010-10','motion-scenes.js?v=20261010-10','motion-scenes.css?v=20261010-10','offline.js?v=20261010-10','manifest.webmanifest','assets/favicon.svg','assets/adiel-alves-linkedin.webp'];
+const FILES=['./','index.html','styles.css?v=20261010-11','app.js?v=20261010-11','projects.js?v=20261010-11','project-utils.js?v=20261010-11','sculpture.js?v=20261010-11','platformer.js?v=20261010-11','platformer.css?v=20261010-11','gallery.css?v=20261010-11','assets/gallery/automacao.webp','assets/gallery/dados.webp','assets/gallery/sistemas.webp','assets/gallery/estudos.webp','motion-scenes.js?v=20261010-11','motion-scenes.css?v=20261010-11','offline.js?v=20261010-11','manifest.webmanifest','assets/favicon.svg','assets/adiel-alves-linkedin.webp'];
 const URLS=FILES.map(file=>new URL(file,BASE).href);
 self.addEventListener('install',event=>event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(URLS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('adiel-portfolio-')&&key!==VERSION).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));

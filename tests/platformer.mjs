@@ -36,3 +36,48 @@ for (let i = 0; i < 3; i++) {
 }
 assert.notEqual(createLevel(0).chips, createLevel(0).chips, 'Restart uses clean state');
 console.log('Platformer: collision, jumping, variable jump, coyote time, pits, restart state, and all level platform routes passed.');
+
+// Project-derived mechanics must be deterministic, bounded, and idempotent.
+const { MISSIONS, collectMissionChip, resolveMissionAction, missionReady } = await import('../platformer.js');
+const { projects } = await import('../projects.js');
+for (const mission of MISSIONS) {
+ const project = projects.find(p => p.id === mission.projectId);
+ assert(project, `Mission references catalog project ${mission.projectId}`);
+ assert.equal(mission.projectTitle, project.title);
+ assert.equal(mission.status, project.status);
+ assert.equal(mission.repositoryUrl, project.repositoryUrl, 'Public links must match the existing catalog, not guesses');
+}
+const lots = createLevel(0);
+assert.equal(resolveMissionAction(lots).ok, false, 'Cannot confirm incomplete lot collection');
+for (let i = 0; i < 3; i++) assert.equal(collectMissionChip(lots, i).points, 100);
+assert.equal(collectMissionChip(lots, 0).points, 0, 'Collecting twice gives no duplicate score');
+assert.equal(missionReady(lots), false, 'Collection alone does not complete the lot mission');
+lots.mission.rejected = 2;
+assert.equal(resolveMissionAction(lots).ok, true);
+assert(missionReady(lots));
+assert.equal(resolveMissionAction(lots).points, 0, 'Second confirmation does not double-process lots');
+assert.equal(lots.mission.rejected, 2, 'Quarantined records do not corrupt valid lots');
+const printing = createLevel(1);
+assert.equal(collectMissionChip(printing, 2).ok, false, 'Diagnostic dependencies enforce test order');
+assert.equal(printing.chips[2].taken, false);
+for (let i = 0; i < 3; i++) collectMissionChip(printing, i);
+assert.equal(resolveMissionAction(printing, { id: 1 }).ok, false, 'Queue cannot process a task out of order');
+assert.equal(printing.mission.queueCursor, 0);
+for (const id of [2, 1, 3]) assert.equal(resolveMissionAction(printing, { id }).ok, true);
+assert(missionReady(printing));
+assert.equal(resolveMissionAction(printing, { id: 3 }).points, 0, 'Already processed queue stays complete');
+const sync = createLevel(2);
+for (let i = 0; i < 3; i++) collectMissionChip(sync, i);
+assert.equal(missionReady(sync), false);
+assert.equal(resolveMissionAction(sync).ok, true);
+assert.deepEqual(sync.mission.committed, [0, 1]); assert.deepEqual(sync.mission.pending, [2]);
+assert(sync.checkpoint.active); assert.equal(sync.checkpoint.x, 2090, 'Failed connection saves progress near repair area');
+assert.equal(resolveMissionAction(sync).ok, false, 'Retry requires recovery module');
+sync.mission.recovery = true; assert.equal(resolveMissionAction(sync).ok, true);
+assert.deepEqual(sync.mission.committed, [0, 1, 2]); assert.deepEqual(sync.mission.pending, []);
+assert(missionReady(sync));
+assert.equal(resolveMissionAction(sync).points, 0, 'Reprocessing cannot duplicate confirmed updates');
+assert.deepEqual(createLevel(2).mission.committed, [], 'Restart clears committed state');
+assert.equal(createLevel(1).mission.queueCursor, 0, 'Restart clears queue state');
+assert(createLevel(2).solids.some(p => sync.recoveryCell.x >= p.x && sync.recoveryCell.x < p.x + p.w && p.y - sync.recoveryCell.y === 38), 'Recovery module is on an already reachability-tested platform');
+console.log('Project missions: catalog mapping, lot validation, ordered diagnostics and queue, partial failure, checkpoint, recovery, retry idempotence, and restart passed.');

@@ -1,0 +1,18 @@
+/* Compact, native-flow gallery. Images are editorial illustrations, never product screenshots. */
+#project-index{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;position:relative}
+.project-tile{display:flex;flex-direction:column;min-width:0;text-align:left;padding:0;background:#151f20;border:1px solid #344e4666;border-radius:9px;overflow:hidden;transition:border-color .2s,background .2s}
+.project-tile:hover{border-color:#8bccb29c;background:#1a2927}
+.tile-visual{position:relative;display:block;aspect-ratio:3/2;overflow:hidden;background:#112522}
+.tile-image{display:block;width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.project-tile:hover .tile-image{transform:scale(1.035)}
+.tile-category{position:absolute;left:10px;bottom:10px;padding:5px 8px;border-radius:4px;background:#0d1819e8;color:#bfe7d5;font:9px monospace;letter-spacing:.3px}
+.tile-body{display:flex;flex-direction:column;gap:11px;padding:15px;flex:1}
+.tile-title{font-size:14px;line-height:1.45;font-weight:500;letter-spacing:-.1px}
+.tile-status{font:10px monospace;color:#a1b6ad;margin-top:auto}
+.card-art .featured-image{display:block;width:100%;height:100%;object-fit:cover;opacity:.94}
+.card-art:has(.featured-image){padding:0;overflow:hidden}
+#project-index .empty-results{grid-column:1/-1}
+@media(max-width:1050px){#project-index{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
+@media(max-width:700px){#project-index{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile-body{padding:13px}.tile-title{font-size:12px}.tile-status{font-size:9px}.tile-category{font-size:8px;left:7px;bottom:7px}}
+@media(max-width:360px){#project-index{grid-template-columns:1fr}.tile-visual{aspect-ratio:2/1}}
+@media(prefers-reduced-motion:reduce){.project-tile,.tile-image{transition:none}.project-tile:hover .tile-image{transform:none}}

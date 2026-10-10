@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';import {readFile,stat} from 'node:fs/pro
 assert.equal(projects.length,25,'25 audited projects must be present');assert.equal(new Set(projects.map(p=>p.id)).size,25,'IDs must be unique');assert.equal(new Set(projects.map(p=>p.title)).size,25,'Titles must be unique');
 for(const p of projects){for(const key of ['id','title','category','summary','status'])assert.ok(p[key],`${p.id} missing ${key}`);assert.ok(['Automação','Dados','Sistemas','Estudos'].includes(p.category));if(p.repositoryUrl)assert.match(p.repositoryUrl,/^https:\/\/github\.com\/adieldie\//);}
 const html=await readFile('index.html','utf8');const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));for(const m of html.matchAll(/href="#([^"]+)"/g))assert.ok(ids.has(m[1]),'Invalid anchor '+m[1]);for(const m of html.matchAll(/(?:src|href)="((?!https?:|tel:|#)[^"]+)"/g))await stat(m[1].split('?')[0]);
-for(const file of ['index.html','styles.css','app.js','sculpture.js','projects.js']){const s=await readFile(file,'utf8');assert.ok(!/ghp_[A-Za-z0-9]+|github_pat_|sk-[A-Za-z0-9]{20}|\d{3}\.\d{3}\.\d{3}-\d{2}|\/workspace\/|agent_notes|dream_notes|127\.0\.0\.1/.test(s),`Private data in ${file}`);}
+for(const file of ['index.html','styles.css','app.js','sculpture.js','projects.js','platformer.js','motion-scenes.js','gallery.css']){const s=await readFile(file,'utf8');assert.ok(!/ghp_[A-Za-z0-9]+|github_pat_|sk-[A-Za-z0-9]{20}|\d{3}\.\d{3}\.\d{3}-\d{2}|\/workspace\/|agent_notes|dream_notes|127\.0\.0\.1/.test(s),`Private data in ${file}`);}
 console.log('PASS: 25 unique projects, complete public fields, valid categories/links/anchors/assets, privacy pattern checks');
 
 const {filterProjects,normalize}=await import('../project-utils.js');
@@ -34,3 +34,7 @@ assert.ok(html.includes('id="robot-platformer"')&&!html.includes('sample-form')&
 assert.ok(app.includes('initScrollScenes()')&&!app.includes('function updateStory'),'Single continuous scroll controller');
 assert.ok(!html.includes('class="site-viewport"'),'Natural page scrolling restored');
 console.log('PASS: platformer integration, continuous scroll controller and native page flow');
+
+for(const name of ['automacao','dados','sistemas','estudos']){const path='assets/gallery/'+name+'.webp';await stat(path);assert.ok(sw.includes(path));}
+assert.ok(app.includes("project-tile")&&app.includes("image.loading='lazy'"));
+console.log('PASS: gallery artwork cached, lazy images and compact project tiles');
