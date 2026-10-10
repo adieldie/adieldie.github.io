@@ -81,3 +81,44 @@ assert.deepEqual(createLevel(2).mission.committed, [], 'Restart clears committed
 assert.equal(createLevel(1).mission.queueCursor, 0, 'Restart clears queue state');
 assert(createLevel(2).solids.some(p => sync.recoveryCell.x >= p.x && sync.recoveryCell.x < p.x + p.w && p.y - sync.recoveryCell.y === 38), 'Recovery module is on an already reachability-tested platform');
 console.log('Project missions: catalog mapping, lot validation, ordered diagnostics and queue, partial failure, checkpoint, recovery, retry idempotence, and restart passed.');
+
+// Touch regression: independent pointer ownership, including the event ordering
+// pointerup -> lostpointercapture. No browser focus is involved in the controller.
+const { createTouchInput } = await import('../platformer.js');
+const touch = createTouchInput();
+assert(touch.startStick(11, 80, 50, 50, 50, 30));
+assert.equal(touch.read().right, true);
+assert(touch.startJump(22));
+assert.deepEqual([touch.read().right, touch.read().jumpPressed, touch.read().activePointers], [true, true, 2], 'Hold right with one pointer while the second requests jump');
+const mobilePlayer = createPlayer(); tick(mobilePlayer, {}, ground, 30);
+stepPlayer(mobilePlayer, touch.read({ consumeJump: true }), ground, dt, 2480);
+assert(mobilePlayer.vx > 0 && mobilePlayer.vy < 0, 'Real physics both moves and jumps in the same simulation step');
+assert.equal(touch.read().jumpPressed, false, 'A held jump is not repeated every physics frame');
+touch.release(22); touch.cancel(22);
+assert.equal(touch.read().right, true, 'Releasing jump and losing its capture preserves movement');
+assert.equal(touch.read().activePointers, 1);
+touch.startJump(33); touch.release(11);
+assert.equal(touch.read().right, false, 'Releasing movement stops only movement');
+assert.equal(touch.read().jumpHeld, true, 'Jump pointer remains held after stick release');
+assert.equal(touch.read().jumpPressed, true);
+touch.release(33); touch.cancel(33);
+assert.equal(touch.read().jumpPressed, true, 'A short tap is preserved through implicit lostpointercapture until the next frame');
+touch.read({ consumeJump: true });
+assert.equal(touch.read().activePointers, 0);
+assert(touch.startStick(44, 52, 51, 50, 50, 30));
+assert.deepEqual([touch.read().left, touch.read().right], [false, false], 'Dead zone prevents neutral-stick drift');
+touch.moveStick(44, -100, 50);
+assert.equal(touch.read().left, true);
+assert.equal(touch.read().dx, -30, 'Thumb travel stays bounded');
+assert.equal(touch.moveStick(99, 100, 50), false, 'Unrelated pointer cannot steal stick ownership');
+assert.equal(touch.startStick(99, 100, 50, 50, 50, 30), false);
+touch.startJump(55); touch.cancel(55);
+assert.equal(touch.read().left, true, 'Cancelling jump leaves the stick intact');
+assert.equal(touch.read().jumpPressed, false, 'Cancelled tap does not produce a phantom jump');
+touch.startJump(66); touch.cancel(44);
+assert.equal(touch.read().jumpHeld, true, 'Cancelling movement leaves the jump intact');
+assert.equal(touch.read().left, false);
+touch.reset();
+assert.deepEqual(touch.read(), { left: false, right: false, jumpPressed: false, jumpHeld: false, stickHeld: false, dx: 0, dy: 0, activePointers: 0 }, 'Pause, lost focus and restart clear all touch state');
+touch.release(66); touch.cancel(66); assert.equal(touch.read().activePointers, 0, 'Late events after reset cannot resurrect input');
+console.log('Mobile touch: simultaneous move+jump physics, independent release/cancel, dead zone, bounded thumb, pointer ownership, short tap, reset and late events passed.');

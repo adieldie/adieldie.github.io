@@ -90,27 +90,10 @@ function showFallback(wrapper, geometry, time, pointer) {
   svg.dataset.renderer = 'projected-mesh';
 }
 
-export function startSculpture(canvas, button) {
-  const wrapper = canvas.parentElement;
-  const media = matchMedia('(prefers-reduced-motion: reduce)');
-  let paused = media.matches, visible = true, frame = 0, time = .4, previous = 0, lost = false;
-  let pointer = [0, 0], target = [0, 0];
-  const geometry = makeGeometry();
-  const setLabel = () => {
-    button.textContent = paused ? 'Ativar movimento' : 'Pausar movimento';
-    button.setAttribute('aria-pressed', String(paused));
-  };
-  const fallback = () => {
-    wrapper.classList.remove('webgl');
-    canvas.dataset.renderer = 'svg';
-    button.hidden = true;
-    showFallback(wrapper, geometry, time, pointer);
-  };
-  wrapper.classList.add('sculpture-neon');
-  setLabel();
+function createWebGLRenderer(canvas, geometry) {
   let gl;
   try { gl = canvas.getContext('webgl', { alpha: true, antialias: true, powerPreference: 'low-power' }); } catch {}
-  if (!gl) { fallback(); return; }
+  if (!gl) return null;
   const vertexSource = `
     attribute vec3 aPosition;
     attribute vec3 aNormal;
@@ -172,7 +155,7 @@ export function startSculpture(canvas, button) {
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw Error('Shader link failed');
   } catch {
     if (program) gl.deleteProgram(program);
-    fallback(); return;
+    return null;
   } finally {
     shaders.forEach(shader => gl.deleteShader(shader));
   }
@@ -191,32 +174,152 @@ export function startSculpture(canvas, button) {
   const uniforms = {
     time: gl.getUniformLocation(program, 'uTime'), aspect: gl.getUniformLocation(program, 'uAspect'), pointer: gl.getUniformLocation(program, 'uPointer')
   };
+  return {
+    surface: canvas, type: 'webgl', interval: 30, dpr: 1.5, maxSize: Infinity,
+    draw(time, pointer, width, height) {
+      gl.viewport(0, 0, width, height);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.uniform1f(uniforms.time, time); gl.uniform1f(uniforms.aspect, width / height);
+      gl.uniform2f(uniforms.pointer, ...pointer);
+      gl.drawElements(gl.TRIANGLES, geometry.indices.length, gl.UNSIGNED_SHORT, 0);
+    }
+  };
+}
+
+// The CPU fallback is real rotating geometry, not a rotated image. Its smaller
+// mesh, 16 fps ceiling, DPR 1 and bounded drawing buffer keep the work modest.
+function createSoftwareRenderer(canvas, wrapper) {
+  const surface = document.createElement('canvas');
+  let context;
+  try { context = surface.getContext('2d', { alpha: true }); } catch {}
+  if (!context) return null;
+  surface.className = 'sculpture-fallback sculpture-software';
+  surface.setAttribute('aria-hidden', 'true');
+  surface.dataset.renderer = 'canvas2d';
+  wrapper.insertBefore(surface, canvas);
+  const mesh = makeGeometry(80, 16), stride = mesh.sides + 1;
+  const positions = new Float32Array(mesh.positions.length), normals = new Float32Array(mesh.normals.length);
+  const projected = new Float32Array(mesh.positions.length / 3 * 2);
+  const faces = [], visibleFaces = [];
+  for (let i = 0; i < mesh.segments; i++) {
+    for (let j = 0; j < mesh.sides; j++) {
+      const k = i * stride + j;
+      faces.push({ ids: [k, k + stride, k + stride + 1, k + 1], depth: 0, point: [0, 0, 0], normal: [0, 0, 0] });
+    }
+  }
+  const key = normalize([-.65, .85, 1.1]), fill = normalize([.8, -.35, .55]), rimLight = normalize([.7, .3, -.3]);
+  const shade = (normal, point) => {
+    const n = normalize(normal), view = normalize([-point[0], -point[1], CAMERA - point[2]]);
+    const diffuse = Math.max(dot(n, key), 0), side = Math.max(dot(n, fill), 0);
+    const reflected = Math.max(dot(n, normalize([key[0] + view[0], key[1] + view[1], key[2] + view[2]])), 0);
+    const shine = Math.pow(reflected, 74) * .9, sheen = Math.pow(reflected, 12);
+    const rim = Math.pow(1 - Math.max(dot(n, view), 0), 3) * (.35 + .65 * Math.max(dot(n, rimLight), 0)) * .8;
+    const depth = .69 + .31 * Math.max(0, Math.min(1, (point[2] + 1.3) / 2.6));
+    const channel = value => Math.round(255 * Math.pow(Math.min(1, value * depth), .88));
+    return `rgb(${channel(.014 + .075 * diffuse + .014 * side + .05 * sheen + .72 * shine + .12 * rim)},${channel(.06 + .53 * diffuse + .15 * side + .18 * sheen + shine + rim)},${channel(.041 + .285 * diffuse + .135 * side + .115 * sheen + .85 * shine + .64 * rim)})`;
+  };
+  const average = (values, a, b) => [
+    (values[a * 3] + values[b * 3]) / 2,
+    (values[a * 3 + 1] + values[b * 3 + 1]) / 2,
+    (values[a * 3 + 2] + values[b * 3 + 2]) / 2
+  ];
+  return {
+    surface, type: 'canvas2d', interval: 62.5, dpr: 1, maxSize: 800,
+    draw(time, pointer, width, height) {
+      const ay = .5 + time * .18 + pointer[0] * .24, ax = .54 + pointer[1] * .18;
+      const cy = Math.cos(ay), sy = Math.sin(ay), cx = Math.cos(ax), sx = Math.sin(ax);
+      const cz = Math.cos(.32), sz = Math.sin(.32);
+      const rotate = (source, destination) => {
+        for (let i = 0; i < source.length; i += 3) {
+          const x = cy * source[i] + sy * source[i + 2], z = -sy * source[i] + cy * source[i + 2];
+          const y = cx * source[i + 1] - sx * z;
+          destination[i] = cz * x - sz * y;
+          destination[i + 1] = sz * x + cz * y;
+          destination[i + 2] = sx * source[i + 1] + cx * z;
+        }
+      };
+      rotate(mesh.positions, positions); rotate(mesh.normals, normals);
+      for (let i = 0, p = 0; i < positions.length; i += 3, p += 2) {
+        const scale = height * .5 * FOCAL / (CAMERA - positions[i + 2]);
+        projected[p] = width * .5 + positions[i] * scale;
+        projected[p + 1] = height * .5 - positions[i + 1] * scale;
+      }
+      visibleFaces.length = 0;
+      for (const face of faces) {
+        const [a, b, c, d] = face.ids;
+        for (let axis = 0; axis < 3; axis++) {
+          face.point[axis] = (positions[a * 3 + axis] + positions[b * 3 + axis] + positions[c * 3 + axis] + positions[d * 3 + axis]) * .25;
+          face.normal[axis] = (normals[a * 3 + axis] + normals[b * 3 + axis] + normals[c * 3 + axis] + normals[d * 3 + axis]) * .25;
+        }
+        if (-face.normal[0] * face.point[0] - face.normal[1] * face.point[1] + face.normal[2] * (CAMERA - face.point[2]) <= 0) continue;
+        face.depth = face.point[2]; visibleFaces.push(face);
+      }
+      visibleFaces.sort((a, b) => a.depth - b.depth);
+      context.clearRect(0, 0, width, height);
+      context.lineWidth = .55; context.lineJoin = 'round';
+      for (const face of visibleFaces) {
+        const [a, b, c, d] = face.ids;
+        const gradient = context.createLinearGradient(
+          (projected[a * 2] + projected[b * 2]) * .5, (projected[a * 2 + 1] + projected[b * 2 + 1]) * .5,
+          (projected[c * 2] + projected[d * 2]) * .5, (projected[c * 2 + 1] + projected[d * 2 + 1]) * .5
+        );
+        gradient.addColorStop(0, shade(average(normals, a, b), average(positions, a, b)));
+        gradient.addColorStop(.5, shade(face.normal, face.point));
+        gradient.addColorStop(1, shade(average(normals, c, d), average(positions, c, d)));
+        context.fillStyle = gradient; context.strokeStyle = gradient;
+        context.beginPath(); context.moveTo(projected[a * 2], projected[a * 2 + 1]);
+        context.lineTo(projected[b * 2], projected[b * 2 + 1]); context.lineTo(projected[c * 2], projected[c * 2 + 1]);
+        context.lineTo(projected[d * 2], projected[d * 2 + 1]); context.closePath(); context.fill(); context.stroke();
+      }
+      surface.dataset.faces = String(visibleFaces.length);
+    }
+  };
+}
+
+export function startSculpture(canvas, button) {
+  const wrapper = canvas.parentElement, media = matchMedia('(prefers-reduced-motion: reduce)');
+  let paused = media.matches, visible = true, frame = 0, time = .4, previous = 0;
+  let pointer = [0, 0], target = [0, 0];
+  const geometry = makeGeometry();
+  const setLabel = () => {
+    button.textContent = paused ? 'Ativar movimento' : 'Pausar movimento';
+    button.setAttribute('aria-pressed', String(paused));
+  };
+  wrapper.classList.add('sculpture-neon');
+  let renderer = createWebGLRenderer(canvas, geometry) || createSoftwareRenderer(canvas, wrapper);
+  const setRenderer = () => {
+    wrapper.classList.toggle('webgl', renderer?.type === 'webgl');
+    wrapper.classList.toggle('software3d', renderer?.type === 'canvas2d');
+    canvas.dataset.renderer = renderer?.type || 'svg';
+    canvas.dataset.triangles = String(renderer?.type === 'webgl' ? geometry.indices.length / 3 : 2560);
+    button.hidden = !renderer;
+    if (!renderer) showFallback(wrapper, geometry, time, pointer);
+  };
+  setLabel(); setRenderer();
+  if (!renderer) return;
   const draw = () => {
-    if (lost || !visible || document.hidden) return;
-    const rect = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5);
+    if (!renderer || !visible || document.hidden) return;
+    const surface = renderer.surface, rect = surface.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, renderer.dpr, renderer.maxSize / Math.max(rect.width, rect.height, 1));
     const width = Math.round(rect.width * dpr), height = Math.round(rect.height * dpr);
     if (!width || !height) return;
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width; canvas.height = height; gl.viewport(0, 0, width, height);
-    }
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.uniform1f(uniforms.time, time); gl.uniform1f(uniforms.aspect, width / height);
-    gl.uniform2f(uniforms.pointer, ...pointer);
-    gl.drawElements(gl.TRIANGLES, geometry.indices.length, gl.UNSIGNED_SHORT, 0);
+    if (surface.width !== width || surface.height !== height) { surface.width = width; surface.height = height; }
+    renderer.draw(time, pointer, width, height);
+    canvas.dataset.angle = surface.dataset.angle = (.5 + time * .18 + pointer[0] * .24).toFixed(4);
   };
   const tick = now => {
     frame = 0;
-    if (paused || !visible || document.hidden || lost) return;
-    if (now - previous > 30) {
-      time += Math.min((now - previous) / 1000, .05); previous = now;
-      pointer = pointer.map((value, i) => value + (target[i] - value) * .07);
+    if (paused || !visible || document.hidden || !renderer) return;
+    if (now - previous >= renderer.interval) {
+      time += Math.min((now - previous) / 1000, .1); previous = now;
+      pointer = pointer.map((value, i) => value + (target[i] - value) * .11);
       draw();
     }
     frame = requestAnimationFrame(tick);
   };
   const schedule = () => {
     cancelAnimationFrame(frame); frame = 0; previous = performance.now();
-    if (!paused && visible && !document.hidden && !lost) frame = requestAnimationFrame(tick);
+    if (!paused && visible && !document.hidden && renderer) frame = requestAnimationFrame(tick);
     else draw();
   };
   button.addEventListener('click', () => { paused = !paused; setLabel(); schedule(); });
@@ -229,13 +332,13 @@ export function startSculpture(canvas, button) {
   wrapper.addEventListener('pointerleave', () => { target = [0, 0]; });
   document.addEventListener('visibilitychange', schedule);
   new IntersectionObserver(entries => { visible = entries[0].isIntersecting; schedule(); }, { threshold: 0 }).observe(canvas);
-  new ResizeObserver(draw).observe(canvas);
+  new ResizeObserver(draw).observe(wrapper);
   canvas.addEventListener('webglcontextlost', event => {
-    event.preventDefault(); lost = true; cancelAnimationFrame(frame);
-    fallback();
+    event.preventDefault();
+    if (renderer?.type !== 'webgl') return;
+    cancelAnimationFrame(frame);
+    renderer = createSoftwareRenderer(canvas, wrapper);
+    setRenderer(); draw(); schedule();
   });
-  // Context loss keeps the static illustration instead of attempting a restart loop.
-  wrapper.classList.add('webgl'); canvas.dataset.renderer = 'webgl';
-  canvas.dataset.triangles = String(geometry.indices.length / 3);
   draw(); schedule();
 }

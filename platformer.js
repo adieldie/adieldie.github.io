@@ -73,6 +73,39 @@ export function stepPlayer(player, input, solids, dt, worldWidth) {
  return player;
 }
 
+/** Independent touch pointers: moving a stick never overwrites a jump pointer.
+ * release preserves a short tap until the next physics frame; cancellation drops it.
+ * Safe to call release/cancel again after lostpointercapture or a global pointerup.
+ */
+export function createTouchInput({ deadZone = .22 } = {}) {
+ let stick = null;
+ const jumps = new Set(), queuedJumps = new Set();
+ function updateStick(id, x, y) {
+  if (!stick || stick.id !== id) return false;
+  const dx = x - stick.cx, dy = y - stick.cy, distance = Math.hypot(dx, dy), scale = distance > stick.radius ? stick.radius / distance : 1;
+  stick.dx = dx * scale; stick.dy = dy * scale;
+  return true;
+ }
+ return {
+  startStick(id, x, y, cx, cy, radius = 32) {
+   if (stick || jumps.has(id)) return false;
+   stick = { id, cx, cy, radius: Math.max(1, radius), dx: 0, dy: 0 };
+   updateStick(id, x, y); return true;
+  },
+  moveStick: updateStick,
+  startJump(id) { if (jumps.has(id) || stick?.id === id) return false; jumps.add(id); queuedJumps.add(id); return true; },
+  release(id) { if (stick?.id === id) stick = null; jumps.delete(id); },
+  cancel(id) { const active = stick?.id === id || jumps.has(id); if (!active) return; if (stick?.id === id) stick = null; jumps.delete(id); queuedJumps.delete(id); },
+  reset() { stick = null; jumps.clear(); queuedJumps.clear(); },
+  read({ consumeJump = false } = {}) {
+   const axis = stick ? stick.dx / stick.radius : 0;
+   const state = { left: axis < -deadZone, right: axis > deadZone, jumpPressed: queuedJumps.size > 0, jumpHeld: jumps.size > 0, stickHeld: Boolean(stick), dx: stick?.dx || 0, dy: stick?.dy || 0, activePointers: jumps.size + (stick ? 1 : 0) };
+   if (consumeJump) queuedJumps.clear();
+   return state;
+  }
+ };
+}
+
 export function initPlatformer(root) {
  if (!root || root.dataset.initialized) return null;
  root.dataset.initialized = 'true';
@@ -84,16 +117,22 @@ export function initPlatformer(root) {
  let level = createLevel(0), player = createPlayer(), score = 0, hearts = 3, mode = 'ready', camera = 0;
  let viewW = 960, viewH = 450, clock = 0, previous = 0, accumulator = 0, frame = 0, gateNotice = false, visible = true;
  let lastMissionNotice = '', missionNoticeTime = 0;
- let keyboard = new Set(), pointers = new Map(), jumpPressed = false, jumpReleased = false, tapLeft = 0, tapRight = 0;
+ let keyboard = new Set(), jumpPressed = false, jumpReleased = false;
+ const touchInput = createTouchInput();
  const unbind = [], particles = [];
  const on = (node, event, fn, options) => { node.addEventListener(event, fn, options); unbind.push(() => node.removeEventListener(event, fn, options)); };
  const announce = text => { q('#robot-status').textContent = text; };
+ const touchControls = q('.robot-touch');
+ touchControls.innerHTML = '<div class="robot-stick-wrap"><div class="robot-joystick" tabindex="0" role="group" aria-label="Joystick de direção: arraste para os lados, ou use as setas e A ou D"><span class="robot-stick-arrow robot-stick-left" aria-hidden="true">‹</span><span class="robot-stick-arrow robot-stick-right" aria-hidden="true">›</span><span class="robot-stick-base" aria-hidden="true"></span><span class="robot-stick-thumb" aria-hidden="true"></span></div><small>ARRASTE PARA ANDAR</small></div><button data-control="jump" class="robot-jump" type="button" aria-label="Pular; pode usar enquanto segura o joystick"><span aria-hidden="true">↑</span><strong>PULAR</strong></button>';
+ const joystick = q('.robot-joystick'), jumpButton = q('[data-control="jump"]');
+ function renderTouch() { const state = touchInput.read(); joystick.style.setProperty('--stick-x', state.dx + 'px'); joystick.style.setProperty('--stick-y', state.dy + 'px'); joystick.classList.toggle('is-held', state.stickHeld); joystick.classList.toggle('is-left', state.left); joystick.classList.toggle('is-right', state.right); jumpButton.classList.toggle('is-held', state.jumpHeld); jumpButton.setAttribute('aria-pressed', String(state.jumpHeld)); }
+
  const missionPanel = document.createElement('div'); missionPanel.className = 'robot-mission'; missionPanel.id = 'robot-mission-context'; missionPanel.innerHTML = '<div><span data-mission-name></span><p data-mission-objective></p></div><span data-mission-progress></span>'; q('.robot-hud').after(missionPanel); canvas.setAttribute('aria-describedby', 'robot-instructions robot-mission-context robot-status'); canvas.setAttribute('aria-label', 'Jogo de plataforma. Andar: setas ou A e D. Pular: Espaço, W ou seta para cima. Acionar terminal: E. Pausar: P ou Esc.');
  const actionButton = document.createElement('button'); actionButton.type = 'button'; actionButton.className = 'robot-action-button'; actionButton.textContent = 'Acionar · E'; actionButton.setAttribute('aria-label', 'Acionar terminal próximo, tecla E'); q('.robot-actions').prepend(actionButton);
  const projectResult = document.createElement('div'); projectResult.className = 'robot-project-result'; projectResult.hidden = true; q('#robot-status').after(projectResult);
  q('.robot-brand strong').textContent = 'BYTE / PROJETOS EM JOGO';
  q('.robot-brand div > span').textContent = 'AUTOMAÇÃO, SUPORTE E INTEGRAÇÕES';
- q('#robot-instructions').textContent = 'Como jogar: setas ou A/D para andar; Espaço, W ou ↑ para pular; E ou Acionar para usar terminais; P ou Esc para pausar. No celular, segure as setas e toque em Pular. Leia a missão de cada fase. Pule sobre drones para desativá-los. Simulação fictícia inspirada nos projetos do portfólio.';
+ q('#robot-instructions').textContent = 'Como jogar: setas ou A/D para andar; Espaço, W ou ↑ para pular; E ou Acionar para usar terminais; P ou Esc para pausar. No celular, arraste e segure o joystick com um dedo; toque em Pular com o outro, sem soltar a direção. Leia a missão de cada fase. Pule sobre drones para desativá-los. Simulação fictícia inspirada nos projetos do portfólio.';
  function missionNotice(message) { if (message && (message !== lastMissionNotice || clock - missionNoticeTime > 2)) { announce(message); lastMissionNotice = message; missionNoticeTime = clock; } }
  function showProjectResult() { projectResult.replaceChildren(); const title = document.createElement('strong'); title.textContent = 'Do jogo ao projeto: ' + level.project.projectTitle; const description = document.createElement('p'); description.textContent = level.project.lesson + ' Status no portfólio: ' + level.project.status + '.'; const link = document.createElement('a'); link.href = level.project.repositoryUrl || '#projetos'; link.textContent = level.project.repositoryUrl ? 'Ver repositório público ↗' : 'Explorar os projetos ↓'; if (level.project.repositoryUrl) { link.target = '_blank'; link.rel = 'noopener noreferrer'; } projectResult.append(title, description, link); projectResult.hidden = false; }
  function interact(id) {
@@ -117,7 +156,7 @@ export function initPlatformer(root) {
   actionButton.textContent = level.index === 0 ? 'Conferir · E' : level.index === 1 ? 'Processar · E' : level.mission.failed ? 'Retomar · E' : 'Sincronizar · E';
   actionButton.disabled = mode !== 'playing';
  }
- function clearInputs() { keyboard.clear(); pointers.clear(); jumpPressed = jumpReleased = false; tapLeft = tapRight = 0; root.querySelectorAll('[data-control]').forEach(b => b.classList.remove('is-held')); }
+ function clearInputs() { keyboard.clear(); touchInput.reset(); jumpPressed = jumpReleased = false; renderTouch(); }
  function display(title, copy, button, kicker = 'MISSÃO EM ANDAMENTO') {
   q('[data-overlay-title]').textContent = title; q('[data-overlay-copy]').textContent = copy; start.textContent = button; q('.robot-overlay-kicker').textContent = kicker; overlay.hidden = false; root.classList.remove('is-playing'); pauseButton.disabled = true; actionButton.disabled = true;
  }
@@ -143,9 +182,8 @@ export function initPlatformer(root) {
  }
  function advance(dt) {
   clock += dt;
-  const held = control => [...pointers.values()].includes(control);
-  const input = { left: keyboard.has('left') || held('left') || tapLeft > 0, right: keyboard.has('right') || held('right') || tapRight > 0, jumpPressed, jumpReleased };
-  tapLeft = Math.max(0, tapLeft - dt); tapRight = Math.max(0, tapRight - dt);
+  const touch = touchInput.read({ consumeJump: true });
+  const input = { left: keyboard.has('left') || touch.left, right: keyboard.has('right') || touch.right, jumpPressed: jumpPressed || touch.jumpPressed, jumpReleased };
   const previousBottom = player.y + player.h;
   stepPlayer(player, input, level.solids, dt, level.width); jumpPressed = jumpReleased = false;
   for (const drone of level.drones) {
@@ -214,19 +252,30 @@ export function initPlatformer(root) {
  function resize() { const r = canvas.getBoundingClientRect(); if (!r.width || !r.height) return; viewW = r.width / r.height * 450; const dpr = Math.min(devicePixelRatio || 1, 2); canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr); camera = clamp(player.x - viewW * .35, 0, Math.max(0, level.width - viewW)); draw(); }
  on(actionButton, 'click', () => { interact(); if (mode === 'playing') canvas.focus({ preventScroll: true }); });
  const keyControl = code => ({ ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'jump', KeyW: 'jump', Space: 'jump' })[code];
- on(canvas, 'keydown', event => { if (event.code === 'KeyE' && mode === 'playing') { event.preventDefault(); if (!event.repeat) interact(); return; } if (event.code === 'Escape' || event.code === 'KeyP') { if (mode === 'playing') { event.preventDefault(); pause(); start.focus({ preventScroll: true }); } return; } const control = keyControl(event.code); if (!control || mode !== 'playing') return; event.preventDefault(); if (control === 'jump' && !keyboard.has(control) && !event.repeat) jumpPressed = true; keyboard.add(control); });
- on(canvas, 'keyup', event => { const control = keyControl(event.code); if (!control) return; if (mode === 'playing') event.preventDefault(); keyboard.delete(control); if (control === 'jump') jumpReleased = true; });
- on(canvas, 'blur', () => { keyboard.clear(); jumpReleased = true; });
- on(root, 'focusout', () => { queueMicrotask(() => { if (!root.contains(document.activeElement)) pause('A missão foi pausada quando o foco saiu do jogo.'); }); });
+ const keydown = event => { if (event.code === 'KeyE' && mode === 'playing') { event.preventDefault(); if (!event.repeat) interact(); return; } if (event.code === 'Escape' || event.code === 'KeyP') { if (mode === 'playing') { event.preventDefault(); pause(); start.focus({ preventScroll: true }); } return; } const control = keyControl(event.code); if (!control || mode !== 'playing') return; event.preventDefault(); if (control === 'jump' && !keyboard.has(control) && !event.repeat) jumpPressed = true; keyboard.add(control); };
+ const keyup = event => { const control = keyControl(event.code); if (!control) return; if (mode === 'playing') event.preventDefault(); keyboard.delete(control); if (control === 'jump') jumpReleased = true; };
+ const clearKeyboard = () => { if (keyboard.has('jump')) jumpReleased = true; keyboard.clear(); };
+ for (const keyboardTarget of [canvas, joystick]) { on(keyboardTarget, 'keydown', keydown); on(keyboardTarget, 'keyup', keyup); on(keyboardTarget, 'blur', clearKeyboard); }
+ on(root, 'focusout', () => { queueMicrotask(() => { if (!root.contains(document.activeElement) && !touchInput.read().activePointers) pause('A missão foi pausada quando o foco saiu do jogo.'); }); });
  on(start, 'click', begin); on(pauseButton, 'click', () => { pause(); start.focus({ preventScroll: true }); });
  on(q('[data-game-restart]'), 'click', () => { reset(); start.focus({ preventScroll: true }); });
- for (const button of root.querySelectorAll('[data-control]')) {
-  const release = event => { pointers.delete(event.pointerId); if (![...pointers.values()].includes(button.dataset.control)) button.classList.remove('is-held'); }; // A touch tap always gives a full jump; keyboard release controls jump height.
-  on(button, 'pointerdown', event => { if (mode !== 'playing') return; event.preventDefault(); button.setPointerCapture(event.pointerId); pointers.set(event.pointerId, button.dataset.control); button.classList.add('is-held'); if (button.dataset.control === 'jump') jumpPressed = true; canvas.focus({ preventScroll: true }); });
-  on(button, 'pointerup', release); on(button, 'pointercancel', release); on(button, 'lostpointercapture', release); on(button, 'contextmenu', e => e.preventDefault());
-  // Keyboard activation of on-screen buttons is still useful with assistive input.
-  on(button, 'click', event => { if (event.detail === 0 && mode === 'playing') { if (button.dataset.control === 'jump') jumpPressed = true; else if (button.dataset.control === 'left') tapLeft = .12; else tapRight = .12; canvas.focus({ preventScroll: true }); } });
- }
+ const capture = (node, id) => { try { node.setPointerCapture(id); } catch { /* Global release listeners remain as a safety net. */ } };
+ const acceptPointer = event => mode === 'playing' && (event.pointerType !== 'mouse' || event.button === 0);
+ on(joystick, 'pointerdown', event => {
+  if (!acceptPointer(event)) return;
+  event.preventDefault();
+  const bounds = joystick.getBoundingClientRect();
+  if (touchInput.startStick(event.pointerId, event.clientX, event.clientY, bounds.left + bounds.width / 2, bounds.top + bounds.height / 2, Math.min(bounds.width, bounds.height) * .28)) { capture(joystick, event.pointerId); renderTouch(); }
+ }, { passive: false });
+ on(joystick, 'pointermove', event => { if (touchInput.moveStick(event.pointerId, event.clientX, event.clientY)) { event.preventDefault(); renderTouch(); } }, { passive: false });
+ on(jumpButton, 'pointerdown', event => { if (!acceptPointer(event)) return; event.preventDefault(); if (touchInput.startJump(event.pointerId)) { capture(jumpButton, event.pointerId); renderTouch(); } }, { passive: false });
+ const releasePointer = event => { touchInput.release(event.pointerId); renderTouch(); };
+ const cancelPointer = event => { touchInput.cancel(event.pointerId); renderTouch(); };
+ for (const control of [joystick, jumpButton]) { on(control, 'pointerup', releasePointer); on(control, 'pointercancel', cancelPointer); on(control, 'lostpointercapture', cancelPointer); on(control, 'contextmenu', event => event.preventDefault()); on(control, 'dragstart', event => event.preventDefault()); }
+ on(window, 'pointerup', releasePointer); on(window, 'pointercancel', cancelPointer);
+ // Touch never moves keyboard focus: a second finger cannot blur/pause the game.
+ // Keyboard/assistive activation retains its normal focused-button interaction.
+ on(jumpButton, 'click', event => { if (event.detail === 0 && mode === 'playing') { jumpPressed = true; canvas.focus({ preventScroll: true }); } });
  on(document, 'visibilitychange', () => { if (document.hidden) pause('A missão foi pausada enquanto esta página estava em segundo plano.'); });
  on(window, 'blur', () => pause('A missão foi pausada quando você saiu desta janela.'));
  const observer = new IntersectionObserver(entries => { visible = entries[0].intersectionRatio >= .25; if (!visible) pause('A missão foi pausada enquanto você explorava o portfólio.'); }, { threshold: [0, .25] }); observer.observe(canvas);

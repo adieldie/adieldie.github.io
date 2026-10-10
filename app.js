@@ -1,8 +1,8 @@
-import { initPlatformer } from './platformer.js?v=20261010-11';
-import { initScrollScenes } from './motion-scenes.js?v=20261010-11';
-import { startSculpture } from './sculpture.js?v=20261010-11';
-import { projects } from './projects.js?v=20261010-11';
-import { filterProjects } from './project-utils.js?v=20261010-11';
+import { initPlatformer } from './platformer.js?v=20261010-12';
+import { initScrollScenes } from './motion-scenes.js?v=20261010-12';
+import { startSculpture } from './sculpture.js?v=20261010-12';
+import { projects } from './projects.js?v=20261010-12';
+import { filterProjects } from './project-utils.js?v=20261010-12';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -52,7 +52,7 @@ startSculpture($('sculpture'),$('motion-toggle'));
 initPlatformer($('robot-platformer'));
 initScrollScenes();
 
-import './offline.js?v=20261010-11';
+import './offline.js?v=20261010-12';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}

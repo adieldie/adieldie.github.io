@@ -25,6 +25,7 @@ export function initScrollScenes() {
   let frame = 0, measureNeeded = true, height = innerHeight;
   let heroTop = 0, heroRange = 1, storyTop = 0, storyHeight = 1;
   let projectTop = 0, projectHeight = 1;
+  let heroFooterTop = 0, heroFooterHeight = 1;
 
   // Move existing nodes, rather than cloning content or replacing controls.
   // All IDs, event handlers, focus targets, and hash links retain their identity.
@@ -129,6 +130,10 @@ export function initScrollScenes() {
     hero.style.setProperty('--hero-scene-height', stageHeight + pinRoom + 'px');
     heroTop = topInDocument(hero);
     heroRange = canPin ? pinRoom : Math.max(1, hero.offsetHeight * .75);
+    if (heroFooter) {
+      heroFooterTop = topInDocument(heroFooter);
+      heroFooterHeight = heroFooter.offsetHeight;
+    }
     records.forEach(record => {
       record.top = topInDocument(record.element);
       record.height = record.element.offsetHeight;
@@ -154,6 +159,15 @@ export function initScrollScenes() {
     const sculptureDescent = Math.min(240, Math.max(160, height * .24));
     hero.style.setProperty('--hero-visual-y', (sculptureDescent * easedHero * factor).toFixed(2) + 'px');
     hero.style.setProperty('--hero-ambient-x', (50 + 18 * easedHero * factor).toFixed(2) + '%');
+    if (heroFooter) {
+      // This timeline follows the footer's own passage through the viewport,
+      // not the pinned hero timeline. It rises continuously in either direction.
+      const progress = clamp((scroll + height - heroFooterTop) / (height + heroFooterHeight));
+      const footerY = (24 - 74 * ease(progress)) * factor;
+      heroFooter.dataset.sceneProgress = progress.toFixed(4);
+      heroFooter.style.setProperty('--footer-text-y', footerY.toFixed(2) + 'px');
+      heroFooter.style.setProperty('--footer-text-opacity', (reduced ? 1 : .74 + .26 * ease(clamp(progress / .32))).toFixed(4));
+    }
     heroWords.forEach((word, index) => {
       const local = ease(clamp(heroProgress * 1.16 - index * .035));
       word.style.setProperty('--word-y', (-local * (14 + index * 2.7) * factor).toFixed(2) + 'px');

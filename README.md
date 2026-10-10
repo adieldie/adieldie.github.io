@@ -37,7 +37,7 @@ No Actions workflow or extra permissions are necessary for branch deployment. Th
 
 ## Motion and 3D
 
-The geometric sculpture has 7,200 triangles, one draw call and no textures. Device pixel ratio is capped at 1.5 and animation is limited to approximately 30 frames per second. Rendering stops when offscreen, paused or in a hidden tab. Reduced-motion preference starts the sculpture paused and disables scroll/reveal transitions. A user may explicitly activate motion. WebGL unavailability or context loss shows a static, depth-sorted SVG projection of the same mesh. The neon material uses key/fill lighting, rim emission and depth shading; its glow is scoped to the artwork. The decorative canvas is hidden from assistive technology; all information is ordinary HTML.
+The geometric sculpture has 7,200 triangles, one draw call and no textures. Device pixel ratio is capped at 1.5 and animation is limited to approximately 30 frames per second. Rendering stops when offscreen, paused or in a hidden tab. Reduced-motion preference starts the sculpture paused and disables scroll/reveal transitions. A user may explicitly activate motion. WebGL unavailability or context loss switches to a real geometry-based Canvas2D renderer, capped at 16 fps, DPR 1 and an 800 px buffer. It keeps pause/reduced-motion/offscreen handling. If both drawing APIs fail, a static depth-sorted SVG projection remains available. The neon material uses key/fill lighting, rim emission and depth shading; its glow is scoped to the artwork. The decorative canvas is hidden from assistive technology; all information is ordinary HTML.
 
 ## Recovery
 
