@@ -1,7 +1,7 @@
-import { runSample } from './sample-utils.js?v=20261010-7';
-import { startSculpture } from './sculpture.js?v=20261010-7';
-import { projects } from './projects.js?v=20261010-7';
-import { filterProjects } from './project-utils.js?v=20261010-7';
+import { challenges, evaluateSequence } from './sample-utils.js?v=20261010-8';
+import { startSculpture } from './sculpture.js?v=20261010-8';
+import { projects } from './projects.js?v=20261010-8';
+import { filterProjects } from './project-utils.js?v=20261010-8';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -50,7 +50,10 @@ let storyFrame = 0;
 function updateStory() {
  storyFrame = 0;
  const reduced = motionPreference.matches;
- const anchor = innerHeight * .56;
+ const viewport = $('conteudo');
+ const viewportBounds = viewport.getBoundingClientRect();
+ const viewHeight = viewport.clientHeight;
+ const anchor = viewportBounds.top + viewHeight * .56;
  let active = 0;
  steps.forEach((step, index) => {
   if (step.getBoundingClientRect().top <= anchor) active = index;
@@ -59,30 +62,56 @@ function updateStory() {
  story.querySelector('.flow-step').textContent = '0' + (active + 1) + ' / 03';
  steps.forEach((step, index) => step.classList.toggle('is-current', index === active));
  const bounds = story.getBoundingClientRect();
- const progress = Math.max(0, Math.min(1, (innerHeight * .45 - bounds.top) / Math.max(1, bounds.height - innerHeight * .45)));
+ const progress = Math.max(0, Math.min(1, (viewportBounds.top + viewHeight * .45 - bounds.top) / Math.max(1, bounds.height - viewHeight * .45)));
  story.style.setProperty('--flow-progress', reduced ? '1' : String(progress));
 }
 function queueStory() { if (!storyFrame) storyFrame = requestAnimationFrame(updateStory); }
-addEventListener('scroll', queueStory, { passive: true });
+$('conteudo').addEventListener('scroll', queueStory, { passive: true });
 addEventListener('resize', queueStory, { passive: true });
 motionPreference.addEventListener('change', queueStory);
 updateStory();
 
-const sampleForm = $('sample-form');
-function resetSample() {
- $('sample-output').replaceChildren(el('h3','','Pronto para experimentar?'),el('p','','Configure os valores ao lado e execute a automação.'));
- document.querySelectorAll('[data-pipeline]').forEach(node=>node.classList.remove('done','failed'));
-}
-sampleForm.addEventListener('reset',resetSample);
-sampleForm.addEventListener('submit',event=>{
- event.preventDefault();
- const result=runSample($('sample-product').value,Number($('sample-stock').value),Number($('sample-quantity').value),$('sample-alert').checked);
- const output=$('sample-output'); output.replaceChildren();
- document.querySelectorAll('[data-pipeline]').forEach((node,index)=>{
-  node.classList.toggle('done',result.ok || index===0 && result.valid);
-  node.classList.toggle('failed',!result.ok && index===(result.valid?1:0));
+
+let round = 0, score = 0, selected = [], solved = false;
+const gameFeedback = $('game-feedback');
+function renderGame() {
+ const challenge = challenges[round];
+ $('game-title').textContent = challenge.title;
+ $('game-description').textContent = challenge.description;
+ $('game-hint').textContent = challenge.hint;
+ $('game-progress').textContent = 'DESAFIO 0' + (round + 1) + ' / 03';
+ $('game-score').textContent = score + ' pontos';
+ $('game-pool').replaceChildren(); $('game-slots').replaceChildren();
+ challenge.options.forEach(option => {
+  const button = el('button','game-chip',option.label);button.type='button';button.disabled=solved||selected.includes(option.id);
+  button.addEventListener('click',()=>{selected.push(option.id);gameFeedback.textContent='Etapa adicionada: '+option.label+'.';renderGame();($('game-pool').querySelector('button:not(:disabled)')||$('game-run')).focus({preventScroll:true});});
+  $('game-pool').append(button);
  });
- output.append(el('h3','',result.title),el('p','',result.message));
- if(result.ok){const values=el('dl','sample-metrics');for(const [name,value] of [['Total do pedido',result.total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})],['Estoque final',String(result.remaining)+' unidades']]){const pair=el('div');pair.append(el('dt','',name),el('dd','',value));values.append(pair);}output.append(values);if(result.alert)output.append(el('p','sample-warning','Atenção: estoque abaixo de 5 unidades. Reposição sinalizada.'));}
- output.append(el('p','sample-log',result.ok?'Registro gerado: entrada validada → estoque conferido → resultado calculado.':'Operação interrompida. Nenhuma baixa de estoque foi realizada.'));
+ for(let i=0;i<3;i++) {
+  const option=challenge.options.find(option=>option.id===selected[i]);
+  if(option){const slot=el('button','game-slot filled','0'+(i+1)+' / '+option.label);slot.type='button';slot.disabled=solved;slot.setAttribute('aria-label','Remover etapa '+(i+1)+': '+option.label);slot.addEventListener('click',()=>{selected.splice(i,1);gameFeedback.textContent='Etapa removida. Você pode escolher novamente.';renderGame();$('game-pool').querySelector('button:not(:disabled)')?.focus({preventScroll:true});});$('game-slots').append(slot);}
+  else $('game-slots').append(el('div','game-slot empty','0'+(i+1)+' / escolha uma etapa'));
+ }
+ $('game-run').disabled=solved;
+ $('game-undo').disabled=solved||!selected.length;
+ $('game-next').hidden=!solved||round===challenges.length-1;
+ $('automation-game').classList.toggle('game-solved',solved);
+}
+$('game-run').addEventListener('click',()=>{
+ if(solved)return;
+ const result=evaluateSequence(challenges[round],selected);
+ gameFeedback.className='game-feedback '+(result.ok?'success':'retry');
+ if(result.ok){solved=true;score+=100;renderGame();gameFeedback.textContent=round===challenges.length-1?'Fluxo concluído! Você resolveu os 3 desafios e somou 300 pontos. Pensar nas regras vem antes de automatizar. Quer tentar de novo?':result.message+' +100 pontos! Pode avançar para o próximo desafio.';}
+ else gameFeedback.textContent=result.message;
+});
+$('game-undo').addEventListener('click',()=>{selected.pop();gameFeedback.textContent='';renderGame();});
+$('game-next').addEventListener('click',()=>{if(!solved||round>=challenges.length-1)return;round++;selected=[];solved=false;gameFeedback.textContent='';renderGame();$('game-title').scrollIntoView({block:'nearest'});$('game-pool').querySelector('button').focus({preventScroll:true});});
+$('game-restart').addEventListener('click',()=>{round=0;score=0;selected=[];solved=false;gameFeedback.className='game-feedback';gameFeedback.textContent='Jogo reiniciado. Monte seu primeiro fluxo.';renderGame();});
+renderGame();
+
+import './offline.js?v=20261010-8';
+
+$('copy-phone').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}
+ catch{$('copy-phone-status').textContent='Selecione e copie o número acima: +55 (75) 99117-0685';}
 });

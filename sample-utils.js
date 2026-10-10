@@ -1,7 +1,10 @@
-export function runSample(product, stock, quantity, lowStockAlert) {
- const catalog = { caderno: {name:'Caderno',price:18}, caneta:{name:'Caneta',price:4.5}, pasta:{name:'Pasta',price:12} };
- if (!Object.hasOwn(catalog,product) || !Number.isInteger(stock) || !Number.isInteger(quantity) || stock<0 || stock>999 || quantity<1 || quantity>999) return {ok:false,valid:false,title:'Confira os valores',message:'Use um produto da lista, estoque entre 0 e 999 e quantidade inteira entre 1 e 999.'};
- if(quantity>stock) return {ok:false,valid:true,title:'Pedido bloqueado pela regra',message:`O pedido tem ${quantity} unidades, mas há somente ${stock} disponíveis. Ajuste a quantidade ou o estoque e tente novamente.`};
- const remaining=stock-quantity;
- return {ok:true,valid:true,title:'Pedido de exemplo processado',message:`${quantity} × ${catalog[product].name}. A regra permitiu o processamento.`,remaining,total:quantity*catalog[product].price,alert:!!lowStockAlert&&remaining<5};
+export const challenges = [
+ {id:'pedido',title:'O pedido não pode sair errado.',description:'Chegou um pedido de 3 unidades. Antes de liberar a separação, você precisa ter certeza de que ele é válido e de que existe estoque.',hint:'Primeiro confira a entrada. Só depois decida se pode liberar.',options:[{id:'liberar',label:'Liberar separação'},{id:'validar',label:'Validar pedido'},{id:'estoque',label:'Conferir estoque'}],solution:['validar','estoque','liberar'],success:'Pedido validado, estoque conferido e separação liberada.',retry:'Liberar antes de validar ou conferir o estoque pode gerar um pedido impossível. Reorganize as etapas.'},
+ {id:'impressao',title:'A impressão ficou na fila.',description:'Uma etiqueta não foi impressa. Monte um diagnóstico controlado antes de mandar imprimir de novo.',hint:'Se a conexão estiver indisponível, repetir o envio não resolve a causa.',options:[{id:'fila',label:'Inspecionar a fila'},{id:'reenviar',label:'Reenviar o documento'},{id:'conexao',label:'Verificar conexão'}],solution:['conexao','fila','reenviar'],success:'Conexão verificada, fila inspecionada e documento reenviado.',retry:'Verifique a conexão e a fila antes de reenviar. Assim você evita repetir uma falha sem entender sua causa.'},
+ {id:'relatorio',title:'Dados que viram uma decisão.',description:'Você recebeu movimentações de exemplo e precisa mostrar o saldo final em um painel. Qual caminho mantém o resultado confiável?',hint:'O relatório depende do cálculo, e o cálculo depende de dados válidos.',options:[{id:'calcular',label:'Calcular saldo'},{id:'mostrar',label:'Atualizar painel'},{id:'dados',label:'Validar movimentações'}],solution:['dados','calcular','mostrar'],success:'Movimentações validadas, saldo calculado e painel atualizado.',retry:'Um painel bonito não corrige dados inválidos. Valide as movimentações antes de calcular e exibir o saldo.'}
+];
+export function evaluateSequence(challenge, sequence) {
+ if(sequence.length!==3)return {ok:false,message:'Escolha as 3 etapas antes de testar o fluxo.'};
+ if(sequence.every((id,index)=>id===challenge.solution[index]))return {ok:true,message:challenge.success};
+ return {ok:false,message:challenge.retry};
 }

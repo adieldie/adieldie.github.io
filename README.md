@@ -31,7 +31,7 @@ No Actions workflow or extra permissions are necessary for branch deployment. Th
 - Edit the public project array in `projects.js`.
 - Keep titles and IDs unique, category within Automação/Dados/Sistemas/Estudos, and honest status/outcome statements.
 - The three featured projects use `featured: true`.
-- Never publish private repositories, secrets, phone numbers, identity documents, real customer records, or client names.
+- Never publish private repositories, secrets, unapproved contact information, identity documents, real customer records, or client names.
 - Contact URLs are in `index.html`. Repository links are individually included only when suitable for public attribution.
 - The site contains no tracking, forms, cookies, external fonts, or analytics.
 
@@ -51,10 +51,16 @@ Browser verification findings are recorded separately after a rendered preview i
 
 After any public CSS/JavaScript change, update the shared `?v=` release value on the stylesheet/script references in `index.html` and the module imports in `app.js`. This avoids mismatched cached assets across a GitHub Pages rollout. SVG controls include intrinsic dimensions as a defensive fallback.
 
-## Interactive automation sample and scroll story
+## Fixed viewport, scroll story and playable lab
 
-The `#automacao` section uses CSS sticky positioning and passive scroll events. Three semantic text stages stay in normal document flow while a decorative diagram tracks progress. There is no wheel interception, scroll locking, external motion library or continuous animation loop. Reduced-motion users get an unpinned, static diagram and shorter text sections; short viewports also disable pinning.
+A persistent header/footer and framed main viewport contain native overflow scrolling. There is no wheel/touch interception or artificial scroll speed. The main region is keyboard focusable and anchors scroll into it. The three-stage automation story retains its sticky diagram on suitable desktop viewports; mobile, short screens and reduced motion use a simpler flow.
 
-The `#amostras` form is a local-only demonstration. `sample-utils.js` validates integer stock/quantity bounds, rejects insufficient stock, calculates example totals, and optionally flags low stock. It never calls a production API, persists data or creates real orders. Repeated runs recompute from the visible input, and Recomeçar resets the form and output. All catalog values are fictional examples.
+The Amostras area is a local-only minigame with three automation challenges. Choose steps in order, test the sequence, undo/remove steps, advance and restart. Correct solutions score 100 points each; repeated test clicks cannot award points twice. There is no timer, production API, analytics or stored player data. All examples are illustrative.
 
-Verification includes unit cases for success, rejection, exhausted stock, optional alerts and invalid input. Rendered and device checks must be reported separately; unit passes alone do not establish visual correctness.
+## Offline support
+
+The user explicitly saves the app using the offline button. A service worker precaches this release's local assets and reports readiness only after installation/activation and cache verification. Navigation tries the network first and falls back to the cached homepage; versioned local assets are served from the matching cache. Old portfolio cache versions are removed on activation. The online app checks for service-worker updates on later visits. GitHub/LinkedIn links and other external resources are never cached and need internet.
+
+Installation is offered only when the browser supplies its install prompt. Safari users receive the standard Add to Home Screen instruction. Storage can be cleared or evicted by the browser; this is not a permanent download guarantee. Real offline/device testing must be reported separately from unit or online checks.
+
+Public contact buttons use only the phone number explicitly approved by the owner. Clicking a link is left to the visitor; the site does not initiate calls or send messages automatically.
