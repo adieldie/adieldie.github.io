@@ -176,26 +176,6 @@ h1{font-size:clamp(63px,6.2vw,92px);letter-spacing:-4.3px}
 @media(max-width:600px){.header nav{font-size:10px;letter-spacing:0}}
 @media(prefers-reduced-motion:reduce){.featured-card:hover{box-shadow:none}}
 
-/* The entire portfolio now lives inside one persistent viewport frame.
-   Native overflow handles wheel, touch, keyboard and anchor navigation. */
-html,body{height:100%;overflow:hidden;scroll-behavior:auto}
-body{background:#0c1313;background-image:radial-gradient(ellipse at 80% 0%,#32675316,transparent 50%)}
-.header.wrap{position:fixed;top:0;left:32px;right:32px;width:auto;height:88px;margin:0;z-index:20;background:#0c1313;box-shadow:0 8px 30px #0002}
-.site-viewport{position:fixed;inset:88px 24px 45px;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;scroll-padding-top:26px;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;border:1px solid #496f636b;background:var(--bg);isolation:isolate;scrollbar-width:thin;scrollbar-color:#648c7c #111c17;outline-offset:-4px}
-.site-viewport::-webkit-scrollbar{width:7px}.site-viewport::-webkit-scrollbar-thumb{background:#648c7c;border:2px solid #111c17}.site-viewport::-webkit-scrollbar-track{background:#111c17}
-.site-viewport:focus:not(:focus-visible){outline:none}.site-viewport:focus-visible{outline:1px solid #84b6a2}
-.hero{min-height:calc(100dvh - 135px);border-inline:0}.hero-copy{padding-top:90px;padding-bottom:130px}
-.footer.wrap{position:fixed;bottom:0;left:32px;right:32px;width:auto;height:45px;margin:0;padding:0;border:0;display:flex;align-items:center;justify-content:space-between;z-index:20;background:#0c1313;font-size:9px}
-.footer>span:nth-child(2){order:0;width:auto}.footer a{margin:0;padding:10px 0}
-.automation-sticky{position:relative;top:auto}.automation-step{min-height:56vh}
-@media(max-width:1000px){.header.wrap{left:25px;right:25px}.site-viewport{inset-inline:16px}.footer.wrap{left:25px;right:25px}}
-@media(max-width:760px){.header.wrap{height:76px;left:20px;right:20px}.site-viewport{inset:76px 10px 37px;scroll-padding-top:18px}.hero-copy{padding:275px 18px 112px}.hero{min-height:0}.footer.wrap{height:37px;left:20px;right:20px;font-size:8px}.footer>span:nth-child(2){display:none}.automation-sticky{position:relative;top:auto;z-index:auto;padding-top:0;background:transparent}.automation-step{min-height:0;padding:65px 0;scroll-margin-top:24px}.automation-intro{display:block;font-size:13px}.automation-sticky h2{font-size:34px}.flow-board{height:160px}.flow-foot{bottom:15px}}
-@media(max-width:600px){.header.wrap{height:105px;flex-wrap:wrap;align-content:center;gap:5px}.header nav{width:100%;justify-content:space-between}.site-viewport{top:105px}.header .wordmark{font-size:22px}.header nav>a:not(.nav-contact){min-height:36px}}
-@media(max-width:420px){.header.wrap{left:16px;right:16px}.site-viewport{inset-inline:7px}.footer.wrap{left:16px;right:16px}.hero-copy{padding:248px 12px 110px}.hero-copy h1{font-size:39px}.hero-actions{gap:14px}.automation-sticky h2{font-size:30px}.flow-node small{font-size:6px}}
-@media(max-width:360px){.hero-copy h1{font-size:34px}.hero-actions{gap:10px}.hero .button{padding-inline:8px}.hero .text-link{font-size:9px}}
-@media(max-height:500px){.header.wrap{height:60px;flex-wrap:nowrap;gap:20px}.header nav{width:auto;gap:16px}.site-viewport{top:60px;bottom:30px}.footer.wrap{height:30px}.header .wordmark{font-size:20px}}
-@media(prefers-reduced-motion:reduce){.site-viewport{scroll-behavior:auto}.automation-step{min-height:0}}
-
 /* Small playable automation lab, with native buttons for touch and keyboard. */
 .automation-game{border:1px solid #496d5d;background:#132019;border-radius:3px;position:relative}
 .game-top,.game-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:19px 27px;border-bottom:1px solid #3c594b;font:10px monospace;color:#a5cdb9;letter-spacing:.7px}
@@ -210,3 +190,5 @@ body{background:#0c1313;background-image:radial-gradient(ellipse at 80% 0%,#3267
 .offline-section{display:grid;grid-template-columns:1fr .8fr;gap:10%;padding-block:50px;border-top:1px solid #3d594a;border-bottom:1px solid #3d594a}.offline-section h2{font-size:35px;margin:0 0 16px;letter-spacing:-1px}.offline-section p{font-size:13px;line-height:1.85;color:#adc1b3;max-width:500px}.offline-section .eyebrow{font:9px monospace;color:#a5d9c0}.offline-actions{align-self:center;display:flex;flex-wrap:wrap;gap:12px}.offline-actions .button{font-size:11px;min-height:46px}.offline-actions p{font-size:11px;margin:0}.offline-actions [hidden]{display:none}.offline-actions button:disabled{opacity:.65;cursor:default}@media(max-width:760px){.offline-section{grid-template-columns:1fr;gap:15px}.offline-section h2{font-size:29px}}
 .personal-contact{border-top:1px solid #45634f;border-bottom:1px solid #45634f;padding:24px 0;margin:30px 0}.contact-number{font:clamp(22px,3vw,34px)/1.4 monospace;color:#d5efde;letter-spacing:-1px;margin:0 0 20px;user-select:all;overflow-wrap:anywhere}.personal-actions{display:flex;flex-wrap:wrap;gap:12px}.personal-actions .button{font-size:12px;min-height:48px}.personal-contact #copy-phone-status{font-size:12px;color:#aecab7;min-height:18px;margin:15px 0 0}@media(max-width:600px){.personal-actions .button{width:100%;justify-content:center}.contact-number{font-size:22px}}
 .skip{z-index:50}
+/* Contact stays one compact block, with quiet text actions. */
+.personal-contact{padding:20px 0;margin:26px 0 18px}.contact-number{font-size:24px;margin-bottom:10px}.personal-actions{gap:8px 24px}.personal-actions .text-link{background:none;color:#b8d6c4;padding:10px 0;min-height:44px;font-size:12px;border:0;white-space:nowrap}.personal-contact #copy-phone-status{font-size:10px;margin-top:3px;min-height:0}.personal-contact #copy-phone-status:empty{margin:0;min-height:0}.contact-links{margin-top:0}.contact-links .text-link{font-size:12px;min-height:44px;display:inline-flex;align-items:center}@media(max-width:600px){.personal-actions{gap:2px 20px}.personal-actions .text-link{font-size:11px}.contact-number{font-size:22px}}

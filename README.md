@@ -51,11 +51,11 @@ Browser verification findings are recorded separately after a rendered preview i
 
 After any public CSS/JavaScript change, update the shared `?v=` release value on the stylesheet/script references in `index.html` and the module imports in `app.js`. This avoids mismatched cached assets across a GitHub Pages rollout. SVG controls include intrinsic dimensions as a defensive fallback.
 
-## Fixed viewport, scroll story and playable lab
+## Scroll-driven scenes and playable lab
 
-A persistent header/footer and framed main viewport contain native overflow scrolling. There is no wheel/touch interception or artificial scroll speed. The main region is keyboard focusable and anchors scroll into it. The three-stage automation story retains its sticky diagram on suitable desktop viewports; mobile, short screens and reduced motion use a simpler flow.
+The page uses natural document scrolling, with pinned scene elements and reversible scroll-driven typography and cards. There is no wheel/touch interception or artificial scroll speed. Anchors and keyboard scrolling remain native. The three-stage automation story retains its sticky diagram on suitable desktop viewports; mobile, short screens and reduced motion use a simpler flow.
 
-The Amostras area is a local-only minigame with three automation challenges. Choose steps in order, test the sequence, undo/remove steps, advance and restart. Correct solutions score 100 points each; repeated test clicks cannot award points twice. There is no timer, production API, analytics or stored player data. All examples are illustrative.
+The Amostras area contains BYTE / EM MISSÃO, an original JavaScript platformer. It includes three sectors, chips, obstacles, drones, checkpoints, lives, score, pause and restart. It starts only after the visitor chooses to play. Keyboard and touch controls are provided. There is no production API, analytics or stored player data. All visuals are original procedural artwork.
 
 ## Offline support
 

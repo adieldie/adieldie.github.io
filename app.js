@@ -1,7 +1,8 @@
-import { challenges, evaluateSequence } from './sample-utils.js?v=20261010-9';
-import { startSculpture } from './sculpture.js?v=20261010-9';
-import { projects } from './projects.js?v=20261010-9';
-import { filterProjects } from './project-utils.js?v=20261010-9';
+import { initPlatformer } from './platformer.js?v=20261010-10';
+import { initScrollScenes } from './motion-scenes.js?v=20261010-10';
+import { startSculpture } from './sculpture.js?v=20261010-10';
+import { projects } from './projects.js?v=20261010-10';
+import { filterProjects } from './project-utils.js?v=20261010-10';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -39,77 +40,12 @@ let filter='Todos';
 
 function render(){const found=filterProjects(projects,filter,$('project-search').value);$('project-index').replaceChildren();$('result-count').textContent=found.length+' '+(found.length===1?'projeto encontrado':'projetos encontrados');for(const p of found){const row=el('button','project-row');row.type='button';row.append(el('span','row-number',String(projects.indexOf(p)+1).padStart(2,'0')),el('span','row-title',p.title),el('span','row-meta',p.category+' · '+p.status),el('span','row-arrow css-arrow',''));row.setAttribute('aria-label','Abrir detalhes: '+p.title);row.addEventListener('click',()=>detail(p));$('project-index').append(row);}if(!found.length)$('project-index').append(el('p','empty-results','Nenhum projeto com esses termos. Tente outra busca ou selecione “Todos”.'));}
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});render();}));$('project-search').addEventListener('input',render);$('total-count').textContent=String(projects.length);$('year').textContent=String(new Date().getFullYear());render();
-if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target);}}),{threshold:.08});document.querySelectorAll('.section-heading,.featured-card,.about-grid,.approach,.contact').forEach(node=>{node.classList.add('reveal');observer.observe(node);});}
 startSculpture($('sculpture'),$('motion-toggle'));
 
-// Scroll-linked story: native document scrolling, one scheduled update per frame.
-const story = document.querySelector('.automation-story');
-const steps = [...document.querySelectorAll('.automation-step')];
-const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
-let storyFrame = 0;
-function updateStory() {
- storyFrame = 0;
- const reduced = motionPreference.matches;
- const viewport = $('conteudo');
- const viewportBounds = viewport.getBoundingClientRect();
- const viewHeight = viewport.clientHeight;
- const anchor = viewportBounds.top + viewHeight * .56;
- let active = 0;
- steps.forEach((step, index) => {
-  if (step.getBoundingClientRect().top <= anchor) active = index;
- });
- story.dataset.active = String(active);
- story.querySelector('.flow-step').textContent = '0' + (active + 1) + ' / 03';
- steps.forEach((step, index) => step.classList.toggle('is-current', index === active));
- const bounds = story.getBoundingClientRect();
- const progress = Math.max(0, Math.min(1, (viewportBounds.top + viewHeight * .45 - bounds.top) / Math.max(1, bounds.height - viewHeight * .45)));
- story.style.setProperty('--flow-progress', reduced ? '1' : String(progress));
-}
-function queueStory() { if (!storyFrame) storyFrame = requestAnimationFrame(updateStory); }
-$('conteudo').addEventListener('scroll', queueStory, { passive: true });
-addEventListener('resize', queueStory, { passive: true });
-motionPreference.addEventListener('change', queueStory);
-updateStory();
+initPlatformer($('robot-platformer'));
+initScrollScenes();
 
-
-let round = 0, score = 0, selected = [], solved = false;
-const gameFeedback = $('game-feedback');
-function renderGame() {
- const challenge = challenges[round];
- $('game-title').textContent = challenge.title;
- $('game-description').textContent = challenge.description;
- $('game-hint').textContent = challenge.hint;
- $('game-progress').textContent = 'DESAFIO 0' + (round + 1) + ' / 03';
- $('game-score').textContent = score + ' pontos';
- $('game-pool').replaceChildren(); $('game-slots').replaceChildren();
- challenge.options.forEach(option => {
-  const button = el('button','game-chip',option.label);button.type='button';button.disabled=solved||selected.includes(option.id);
-  button.addEventListener('click',()=>{selected.push(option.id);gameFeedback.textContent='Etapa adicionada: '+option.label+'.';renderGame();($('game-pool').querySelector('button:not(:disabled)')||$('game-run')).focus({preventScroll:true});});
-  $('game-pool').append(button);
- });
- for(let i=0;i<3;i++) {
-  const option=challenge.options.find(option=>option.id===selected[i]);
-  if(option){const slot=el('button','game-slot filled','0'+(i+1)+' / '+option.label);slot.type='button';slot.disabled=solved;slot.setAttribute('aria-label','Remover etapa '+(i+1)+': '+option.label);slot.addEventListener('click',()=>{selected.splice(i,1);gameFeedback.textContent='Etapa removida. Você pode escolher novamente.';renderGame();$('game-pool').querySelector('button:not(:disabled)')?.focus({preventScroll:true});});$('game-slots').append(slot);}
-  else $('game-slots').append(el('div','game-slot empty','0'+(i+1)+' / escolha uma etapa'));
- }
- $('game-run').disabled=solved;
- $('game-undo').disabled=solved||!selected.length;
- $('game-next').hidden=!solved||round===challenges.length-1;
- $('automation-game').classList.toggle('game-solved',solved);
-}
-$('game-run').addEventListener('click',()=>{
- if(solved)return;
- const result=evaluateSequence(challenges[round],selected);
- gameFeedback.className='game-feedback '+(result.ok?'success':'retry');
- if(result.ok){solved=true;score+=100;renderGame();gameFeedback.textContent=round===challenges.length-1?'Fluxo concluído! Você resolveu os 3 desafios e somou 300 pontos. Pensar nas regras vem antes de automatizar. Quer tentar de novo?':result.message+' +100 pontos! Pode avançar para o próximo desafio.';}
- else gameFeedback.textContent=result.message;
-});
-$('game-undo').addEventListener('click',()=>{selected.pop();gameFeedback.textContent='';renderGame();});
-$('game-next').addEventListener('click',()=>{if(!solved||round>=challenges.length-1)return;round++;selected=[];solved=false;gameFeedback.textContent='';renderGame();$('game-title').scrollIntoView({block:'nearest'});$('game-pool').querySelector('button').focus({preventScroll:true});});
-$('game-restart').addEventListener('click',()=>{round=0;score=0;selected=[];solved=false;gameFeedback.className='game-feedback';gameFeedback.textContent='Jogo reiniciado. Monte seu primeiro fluxo.';renderGame();});
-renderGame();
-
-import './offline.js?v=20261010-9';
+import './offline.js?v=20261010-10';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}

@@ -20,21 +20,17 @@ console.log('PASS: accent-insensitive search, whitespace trimming, all categorie
 assert.equal(projects.filter(p=>p.featured).length,3,'Three featured projects');
 assert.ok(html.includes('alt="Foto de Adiel Alves"'),'Portrait has descriptive alt');
 assert.ok(html.includes('width="88" height="88"'),'Portrait has layout dimensions');
-assert.ok(html.includes('Contratar um projeto')&&html.includes('Conversar sobre uma vaga'),'Distinct contact actions');
+assert.ok(html.includes('Perfil profissional no LinkedIn')&&html.includes('Conversar no WhatsApp'),'Compact contact actions');
 const release=html.match(/styles\.css\?v=([^"]+)/)?.[1];assert.ok(release);
 const app=await readFile('app.js','utf8');for(const match of app.matchAll(/from '[^']+\?v=([^']+)'/g))assert.equal(match[1],release,'Coordinated release version');
 console.log('PASS: featured count, portrait semantics/dimensions, contact actions and coordinated asset versions');
 
-assert.ok(html.includes('class="site-viewport" tabindex="0"'),'Global scroll viewport remains keyboard focusable');
-assert.ok(app.includes("$('conteudo').addEventListener('scroll', queueStory"),'Story observes the actual native scroll container');
-console.log('PASS: global fixed viewport keyboard access and scroll event binding');
-const {challenges,evaluateSequence}=await import('../sample-utils.js');
-assert.equal(challenges.length,3);for(const c of challenges){assert.equal(new Set(c.solution).size,3);assert.ok(c.solution.every(id=>c.options.some(o=>o.id===id)));assert.equal(evaluateSequence(c,[]).ok,false);assert.equal(evaluateSequence(c,c.solution).ok,true);assert.equal(evaluateSequence(c,[...c.solution].reverse()).ok,false);}
-assert.ok(!html.includes('sample-form'),'Old form replaced by playable lab');
-assert.ok(html.includes('id="game-restart"')&&html.includes('id="game-undo"'));
-console.log('PASS: all three game challenges, incomplete/wrong/correct sequences, restart/undo controls');
 const manifest=JSON.parse(await readFile('manifest.webmanifest','utf8'));assert.equal(manifest.start_url,'./');
 const sw=await readFile('sw.js','utf8');assert.ok(sw.includes("const VERSION='adiel-portfolio-"+release+"'"));
 for(const match of sw.matchAll(/'([^']+\?v=([^']+))'/g)){assert.equal(match[2],release);await stat(match[1].split('?')[0]);}
 assert.ok(html.includes('https://wa.me/5575991170685')&&html.includes('tel:+5575991170685'));
 console.log('PASS: offline release alignment/assets, manifest and approved contact links');
+assert.ok(html.includes('id="robot-platformer"')&&!html.includes('sample-form')&&!html.includes('id="automation-game"'),'Platformer replaces earlier samples');
+assert.ok(app.includes('initScrollScenes()')&&!app.includes('function updateStory'),'Single continuous scroll controller');
+assert.ok(!html.includes('class="site-viewport"'),'Natural page scrolling restored');
+console.log('PASS: platformer integration, continuous scroll controller and native page flow');
