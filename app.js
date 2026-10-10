@@ -1,6 +1,7 @@
-import { startSculpture } from './sculpture.js?v=20261010-5';
-import { projects } from './projects.js?v=20261010-5';
-import { filterProjects } from './project-utils.js?v=20261010-5';
+import { runSample } from './sample-utils.js?v=20261010-6';
+import { startSculpture } from './sculpture.js?v=20261010-6';
+import { projects } from './projects.js?v=20261010-6';
+import { filterProjects } from './project-utils.js?v=20261010-6';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -40,3 +41,48 @@ function render(){const found=filterProjects(projects,filter,$('project-search')
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});render();}));$('project-search').addEventListener('input',render);$('total-count').textContent=String(projects.length);$('year').textContent=String(new Date().getFullYear());render();
 if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target);}}),{threshold:.08});document.querySelectorAll('.section-heading,.featured-card,.about-grid,.approach,.contact').forEach(node=>{node.classList.add('reveal');observer.observe(node);});}
 startSculpture($('sculpture'),$('motion-toggle'));
+
+// Scroll-linked story: native document scrolling, one scheduled update per frame.
+const story = document.querySelector('.automation-story');
+const steps = [...document.querySelectorAll('.automation-step')];
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+let storyFrame = 0;
+function updateStory() {
+ storyFrame = 0;
+ const reduced = motionPreference.matches;
+ const anchor = innerHeight * .56;
+ let active = 0;
+ steps.forEach((step, index) => {
+  if (step.getBoundingClientRect().top <= anchor) active = index;
+ });
+ story.dataset.active = String(active);
+ story.querySelector('.flow-step').textContent = '0' + (active + 1) + ' / 03';
+ steps.forEach((step, index) => step.classList.toggle('is-current', index === active));
+ const bounds = story.getBoundingClientRect();
+ const progress = Math.max(0, Math.min(1, (innerHeight * .45 - bounds.top) / Math.max(1, bounds.height - innerHeight * .45)));
+ story.style.setProperty('--flow-progress', reduced ? '1' : String(progress));
+}
+function queueStory() { if (!storyFrame) storyFrame = requestAnimationFrame(updateStory); }
+addEventListener('scroll', queueStory, { passive: true });
+addEventListener('resize', queueStory, { passive: true });
+motionPreference.addEventListener('change', queueStory);
+updateStory();
+
+const sampleForm = $('sample-form');
+function resetSample() {
+ $('sample-output').replaceChildren(el('h3','','Pronto para experimentar?'),el('p','','Configure os valores ao lado e execute a automação.'));
+ document.querySelectorAll('[data-pipeline]').forEach(node=>node.classList.remove('done','failed'));
+}
+sampleForm.addEventListener('reset',resetSample);
+sampleForm.addEventListener('submit',event=>{
+ event.preventDefault();
+ const result=runSample($('sample-product').value,Number($('sample-stock').value),Number($('sample-quantity').value),$('sample-alert').checked);
+ const output=$('sample-output'); output.replaceChildren();
+ document.querySelectorAll('[data-pipeline]').forEach((node,index)=>{
+  node.classList.toggle('done',result.ok || index===0 && result.valid);
+  node.classList.toggle('failed',!result.ok && index===(result.valid?1:0));
+ });
+ output.append(el('h3','',result.title),el('p','',result.message));
+ if(result.ok){const values=el('dl','sample-metrics');for(const [name,value] of [['Total do pedido',result.total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})],['Estoque final',String(result.remaining)+' unidades']]){const pair=el('div');pair.append(el('dt','',name),el('dd','',value));values.append(pair);}output.append(values);if(result.alert)output.append(el('p','sample-warning','Atenção: estoque abaixo de 5 unidades. Reposição sinalizada.'));}
+ output.append(el('p','sample-log',result.ok?'Registro gerado: entrada validada → estoque conferido → resultado calculado.':'Operação interrompida. Nenhuma baixa de estoque foi realizada.'));
+});
