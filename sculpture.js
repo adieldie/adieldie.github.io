@@ -5,7 +5,7 @@ export function startSculpture(canvas, button) {
   let paused = media.matches, visible = true, frame = 0, time = .4, previous = 0, lost = false;
   let gl;
   try { gl = canvas.getContext('webgl', {alpha: true, antialias: true, powerPreference: 'low-power'}); } catch {}
-  const setLabel = () => { button.textContent = paused ? 'Ativar movimento ↻' : 'Pausar movimento Ⅱ'; button.setAttribute('aria-pressed', String(paused)); };
+  const setLabel = () => { button.textContent = paused ? 'Ativar movimento' : 'Pausar movimento'; button.setAttribute('aria-pressed', String(paused)); };
   setLabel();
   if (!gl) { button.hidden = true; return; }
   const vertexSource = `attribute vec3 aPosition; attribute vec3 aNormal; uniform float uTime; uniform float uAspect; uniform vec2 uPointer; varying vec3 vNormal; varying vec3 vPosition;
