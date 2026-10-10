@@ -12,7 +12,7 @@ else {
   save.disabled=true;status.textContent='Salvando os arquivos desta versão…';
   try {
    const reg=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
-   await reg.update();
+   await reg.update().catch(error=>{if(!reg.active)throw error;});
    const worker=reg.installing||reg.waiting||reg.active;
    if(!worker)throw new Error('missing');
    await new Promise((resolve,reject)=>{
@@ -24,7 +24,7 @@ else {
    const channel=new MessageChannel();
    const cached=await new Promise((resolve,reject)=>{
     const timeout=setTimeout(()=>reject(new Error('timeout')),15000);
-    channel.port1.onmessage=event=>{clearTimeout(timeout);resolve(event.data?.ready===true&&event.data?.version==='adiel-portfolio-20261010-8');channel.port1.close();};
+    channel.port1.onmessage=event=>{clearTimeout(timeout);resolve(event.data?.ready===true&&event.data?.version==='adiel-portfolio-20261010-9');channel.port1.close();};
     worker.postMessage({type:'CHECK_OFFLINE'},[channel.port2]);
    });
    if(!cached)throw new Error('incomplete');

@@ -1,6 +1,6 @@
-const VERSION='adiel-portfolio-20261010-8';
+const VERSION='adiel-portfolio-20261010-9';
 const BASE=new URL('./',self.location.href);
-const FILES=['./','index.html','styles.css?v=20261010-8','app.js?v=20261010-8','projects.js?v=20261010-8','project-utils.js?v=20261010-8','sculpture.js?v=20261010-8','sample-utils.js?v=20261010-8','offline.js?v=20261010-8','manifest.webmanifest','assets/favicon.svg','assets/adiel-alves-linkedin.webp'];
+const FILES=['./','index.html','styles.css?v=20261010-9','app.js?v=20261010-9','projects.js?v=20261010-9','project-utils.js?v=20261010-9','sculpture.js?v=20261010-9','sample-utils.js?v=20261010-9','offline.js?v=20261010-9','manifest.webmanifest','assets/favicon.svg','assets/adiel-alves-linkedin.webp'];
 const URLS=FILES.map(file=>new URL(file,BASE).href);
 self.addEventListener('install',event=>event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(URLS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('adiel-portfolio-')&&key!==VERSION).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));

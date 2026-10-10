@@ -1,7 +1,7 @@
-import { challenges, evaluateSequence } from './sample-utils.js?v=20261010-8';
-import { startSculpture } from './sculpture.js?v=20261010-8';
-import { projects } from './projects.js?v=20261010-8';
-import { filterProjects } from './project-utils.js?v=20261010-8';
+import { challenges, evaluateSequence } from './sample-utils.js?v=20261010-9';
+import { startSculpture } from './sculpture.js?v=20261010-9';
+import { projects } from './projects.js?v=20261010-9';
+import { filterProjects } from './project-utils.js?v=20261010-9';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -109,7 +109,7 @@ $('game-next').addEventListener('click',()=>{if(!solved||round>=challenges.lengt
 $('game-restart').addEventListener('click',()=>{round=0;score=0;selected=[];solved=false;gameFeedback.className='game-feedback';gameFeedback.textContent='Jogo reiniciado. Monte seu primeiro fluxo.';renderGame();});
 renderGame();
 
-import './offline.js?v=20261010-8';
+import './offline.js?v=20261010-9';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}
