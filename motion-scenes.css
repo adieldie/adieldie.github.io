@@ -74,8 +74,8 @@ html[data-scroll-scenes] .motion-hero .sculpture-fallback {
 html[data-scroll-scenes] .motion-hero .visual:before {
   background: radial-gradient(ellipse at 65% 40%, #456c5445, transparent 65%);
 }
-html[data-scroll-scenes] .motion-hero .visual-label { bottom: 98px; }
-html[data-scroll-scenes] .motion-hero .motion-toggle { bottom: 141px; z-index: 4; pointer-events: auto; transform: none; }
+html[data-scroll-scenes] .motion-hero .visual-label { top: auto; bottom: 98px; }
+html[data-scroll-scenes] .motion-hero .motion-toggle { top: auto; height: auto; min-height: 44px; bottom: 141px; z-index: 4; pointer-events: auto; transform: none; }
 html[data-scroll-scenes] .motion-hero > .hero-bottom {
   position: relative;
   inset: auto;
