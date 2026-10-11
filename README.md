@@ -68,3 +68,7 @@ Public contact buttons use only the phone number explicitly approved by the owne
 ## Color preference and fixed navigation
 
 The fixed header provides Sistema / Claro / Escuro. The default follows the system; only this local preference is stored. A pre-CSS bootstrap avoids a wrong-color first paint, and later system changes apply in automatic mode. Header height is measured for native anchor offsets. Illustrations and the playable canvas retain deliberate dark framing in light mode.
+
+## Public demonstration links
+
+Project detail panels separately describe sanitized public excerpts: their own technologies, experimental stage and exclusions. A public excerpt does not expose or certify the full original application. Related operational variants stay under one project; the project count remains 25. External GitHub links require a connection even when the portfolio itself is saved offline. New links must be verified public before deployment.

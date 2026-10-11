@@ -20,7 +20,22 @@ export const projects = [
       "JSON"
     ],
     "domain": "Dados e relatórios",
-    "featured": false
+    "featured": false,
+    "publicDemos": [
+      {
+        "title": "Comparação de custos · demo offline",
+        "description": "Compara duas cotações equivalentes, distribui um benefício hipotético por embalagem e calcula margem bruta estimada com Decimal. Inclui exemplo de terminal e interface desktop opcional.",
+        "technologies": [
+          "Python 3.10+",
+          "Decimal",
+          "CustomTkinter (interface opcional)",
+          "JSON"
+        ],
+        "status": "Demonstração parcial · experimental / em teste",
+        "limitations": "Dados fictícios; sem ERP, importação de notas ou compra. Testes do núcleo passaram, mas a interface gráfica ainda requer validação manual. Frete, tributos e condições comerciais completas não são modelados; não há economia real medida.",
+        "repositoryUrl": "https://github.com/adieldie/procurement-cost-comparator-demo"
+      }
+    ]
   },
   {
     "id": "entrada-mercadorias",
@@ -43,7 +58,21 @@ export const projects = [
       "WebView"
     ],
     "domain": "Automação",
-    "featured": true
+    "featured": true,
+    "publicDemos": [
+      {
+        "title": "Estados de recebimento · envio simulado",
+        "description": "Demonstra transições entre leitura, mapeamento, plano, confirmação, envio simulado, validação e recuperação, com histórico em JSON.",
+        "technologies": [
+          "Python 3.10+",
+          "JSON",
+          "Máquina de estados"
+        ],
+        "status": "Módulo parcial · experimental / em teste",
+        "limitations": "Não recebe mercadoria nem acessa serviços. A transição direta de plano pronto para envio é permitida e force() ignora a validação de transição; portanto não funciona como barreira de autorização ou segurança. Interface desktop e adaptadores reais não estão incluídos.",
+        "repositoryUrl": "https://github.com/adieldie/receiving-state-demo"
+      }
+    ]
   },
   {
     "id": "operacao-entregas",
@@ -65,7 +94,45 @@ export const projects = [
       "Interfaces web"
     ],
     "domain": "Integrações",
-    "featured": false
+    "featured": false,
+    "publicDemos": [
+      {
+        "title": "Janela operacional · módulo demonstrativo",
+        "description": "Calcula um intervalo semiaberto de turno que atravessa a meia-noite e sua data de referência, usando horários fictícios.",
+        "technologies": [
+          "Python 3.10+",
+          "datetime",
+          "Biblioteca padrão"
+        ],
+        "status": "Módulo parcial · experimental / em teste",
+        "limitations": "Sem painel, captura de pedidos, impressão, autenticação ou banco de dados. Datas locais sem fuso; não realiza conversão de timestamps UTC. O módulo também aparece na variante abaixo, não sendo dois produtos independentes.",
+        "repositoryUrl": "https://github.com/adieldie/operational-shift-demo"
+      },
+      {
+        "title": "Janela operacional · variante do mesmo módulo",
+        "description": "Recorte de uma revisão da mesma família de painéis. A regra de janela de turno é idêntica à demonstração principal.",
+        "technologies": [
+          "Python 3.10+",
+          "datetime",
+          "Biblioteca padrão"
+        ],
+        "status": "Variante experimental · execução não verificada",
+        "limitations": "Não é um produto adicional nem uma nova implementação independente. Nenhum teste de execução foi realizado para esta variante; sem painel, banco ou integrações. Datas locais sem fuso.",
+        "repositoryUrl": "https://github.com/adieldie/operational-shift-variant"
+      },
+      {
+        "title": "Transformações de pedidos · trecho para estudo",
+        "description": "Reúne funções isoladas de formatação de alterações de quantidade, normalização textual/de áreas e interpretação de datas ISO.",
+        "technologies": [
+          "Python 3.10+",
+          "datetime",
+          "Biblioteca padrão"
+        ],
+        "status": "Trecho experimental incompleto · execução não verificada",
+        "limitations": "Não é o robô completo. O trecho exclui, sem corrigir, uma região de execução com erro de sintaxe no código mais amplo. A interpretação de fuso varia conforme o tipo da entrada; a normalização remove números e pode juntar nomes distintos. Nenhum teste de execução deste recorte foi realizado.",
+        "repositoryUrl": "https://github.com/adieldie/order-transform-experiment"
+      }
+    ]
   },
   {
     "id": "relatorios-entregas",
@@ -88,7 +155,21 @@ export const projects = [
       "Planilhas"
     ],
     "domain": "Dados e relatórios",
-    "featured": false
+    "featured": false,
+    "publicDemos": [
+      {
+        "title": "Resumo de entregas · agregação sintética",
+        "description": "Agrupa registros fictícios por entregador, conta registros pagáveis, soma taxas e sinaliza zonas ausentes do cadastro de exemplo.",
+        "technologies": [
+          "Python 3.10+",
+          "Biblioteca padrão",
+          "Agregação de dados"
+        ],
+        "status": "Módulo parcial · experimental / em teste",
+        "limitations": "Sem dashboard, integração, cobrança ou pagamento. Usa float e arredondamento do algoritmo de origem; não é um motor contábil. Exige o esquema de entrada demonstrado e não valida todos os dados malformados.",
+        "repositoryUrl": "https://github.com/adieldie/delivery-summary-demo"
+      }
+    ]
   },
   {
     "id": "apoio-entregadores",
@@ -136,7 +217,22 @@ export const projects = [
       "SSE"
     ],
     "domain": "Dados e relatórios",
-    "featured": false
+    "featured": false,
+    "publicDemos": [
+      {
+        "title": "Conferência de estoque · demo local",
+        "description": "Valida EAN-13, registra contagens por unidade ou embalagem, converte quantidades e mostra correções e diferenças em um catálogo fictício. A câmera é opcional quando BarcodeDetector suporta EAN-13.",
+        "technologies": [
+          "JavaScript",
+          "HTML",
+          "CSS",
+          "BarcodeDetector (opcional)"
+        ],
+        "status": "Adaptação demonstrativa parcial · experimental / em teste",
+        "limitations": "Estado apenas na memória da aba; sem estoque real, integração ou sincronização multiusuário. A câmera depende de permissão, contexto seguro e navegador compatível. Testes de regras não certificam leitura em aparelhos; iPhone físico não validado.",
+        "repositoryUrl": "https://github.com/adieldie/inventory-check-demo"
+      }
+    ]
   },
   {
     "id": "diagnostico-impressao",
@@ -182,7 +278,21 @@ export const projects = [
       "Logs"
     ],
     "domain": "Integrações",
-    "featured": false
+    "featured": false,
+    "publicDemos": [
+      {
+        "title": "Correspondência de catálogo · recorte offline",
+        "description": "Sugere correspondências entre produtos por nome, preço, aliases, aproximação textual e categoria.",
+        "technologies": [
+          "Python 3.10+",
+          "Biblioteca padrão",
+          "Correspondência textual"
+        ],
+        "status": "Demonstração parcial · experimental / em teste",
+        "limitations": "Não é um sincronizador completo e não grava em catálogos. Aproximação textual e desempate podem escolher o item errado; resultados exigem revisão humana. A tolerância de preço do exemplo não é uma regra universal.",
+        "repositoryUrl": "https://github.com/adieldie/catalog-match-demo"
+      }
+    ]
   },
   {
     "id": "campanhas-confirmacao",
@@ -206,7 +316,21 @@ export const projects = [
       "Hashes"
     ],
     "domain": "Marketing e tecnologia",
-    "featured": true
+    "featured": true,
+    "publicDemos": [
+      {
+        "title": "Pré-validação de campanhas · dry-run offline",
+        "description": "Valida campos obrigatórios e regras ilustrativas, produz estados PASS, REVIEW_REQUIRED ou BLOCK e mantém uma etapa separada de confirmação.",
+        "technologies": [
+          "Python 3.10+",
+          "Biblioteca padrão",
+          "Dry-run"
+        ],
+        "status": "Demonstração parcial · experimental / em teste",
+        "limitations": "Não cria campanhas, não acessa contas e não implementa servidor MCP. Regras são exemplos técnicos, não validação jurídica ou de políticas atuais. PASS não garante elegibilidade e can_proceed permanece falso mesmo na simulação aprovada.",
+        "repositoryUrl": "https://github.com/adieldie/campaign-dry-run-demo"
+      }
+    ]
   },
   {
     "id": "consulta-caixa",
@@ -229,7 +353,21 @@ export const projects = [
       "Interfaces web"
     ],
     "domain": "Dados e relatórios",
-    "featured": false
+    "featured": false,
+    "publicDemos": [
+      {
+        "title": "Normalização de respostas · recorte JSON",
+        "description": "Localiza listas de eventos ou pedidos e metadados de paginação em respostas JSON aninhadas.",
+        "technologies": [
+          "Go 1.18+",
+          "JSON",
+          "Biblioteca padrão"
+        ],
+        "status": "Experimental · compilação e execução não verificadas",
+        "limitations": "O recorte e seus quatro testes não foram compilados nem executados durante a preparação. Não é auditor financeiro completo, não calcula divergências nem comprova conciliação. Não faz requisições, não usa sessões nem conecta serviços.",
+        "repositoryUrl": "https://github.com/adieldie/audit-response-demo"
+      }
+    ]
   },
   {
     "id": "simulador-operacoes",

@@ -43,3 +43,12 @@ assert.ok(html.indexOf("localStorage.getItem('adiel-portfolio-theme')")<html.ind
 assert.ok(theme.includes("['system', 'light', 'dark']")&&theme.includes("portfolio:themechange"),'Three validated theme modes and change notification');
 assert.ok(sw.includes('theme.js?v='+release)&&sw.includes('theme.css?v='+release)&&sw.includes('reference-polish.css?v='+release),'New styling modules included offline');
 console.log('PASS: theme bootstrap, validated preference modes and offline theme assets');
+
+const demos=projects.flatMap(p=>(p.publicDemos||[]).map(d=>({...d,projectId:p.id})));
+assert.equal(demos.length,10,'Ten public excerpts, not ten new products');
+assert.equal(new Set(demos.map(d=>d.repositoryUrl)).size,10,'One association per public excerpt');
+for(const d of demos){assert.match(d.repositoryUrl,/^https:\/\/github\.com\/adieldie\/[a-z0-9-]+$/);for(const field of ['title','description','status','limitations'])assert.ok(d[field]);assert.ok(d.technologies.length);assert.match(d.status,/experimental|Experimental/);}
+assert.equal(projects.find(p=>p.id==='operacao-entregas').publicDemos.length,3,'Family variants remain one portfolio project');
+assert.match(demos.find(d=>d.repositoryUrl.endsWith('/audit-response-demo')).limitations,/não foram compilados nem executados/);
+assert.match(demos.find(d=>d.repositoryUrl.endsWith('/operational-shift-variant')).limitations,/Não é um produto adicional/);
+console.log('PASS: ten unique demo references with explicit scope, technologies and experimental limitations');

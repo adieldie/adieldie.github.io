@@ -1,9 +1,9 @@
-import { initTheme } from './theme.js?v=20261010-14';
-import { initPlatformer } from './platformer.js?v=20261010-14';
-import { initScrollScenes } from './motion-scenes.js?v=20261010-14';
-import { startSculpture } from './sculpture.js?v=20261010-14';
-import { projects } from './projects.js?v=20261010-14';
-import { filterProjects } from './project-utils.js?v=20261010-14';
+import { initTheme } from './theme.js?v=20261011-15';
+import { initPlatformer } from './platformer.js?v=20261011-15';
+import { initScrollScenes } from './motion-scenes.js?v=20261011-15';
+import { startSculpture } from './sculpture.js?v=20261011-15';
+import { projects } from './projects.js?v=20261011-15';
+import { filterProjects } from './project-utils.js?v=20261011-15';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -14,6 +14,14 @@ function detail(project) {
  for(const [heading,content] of [['O contexto',project.narrative||project.summary],['A construção',project.implementation],['O que este projeto reúne',project.outcome]]){if(!content)continue;const section=el('section','dialog-section');section.append(el('h3','',heading),el('p','',Array.isArray(content)?content.join(' '):content));root.append(section);}
  root.append(el('p','dialog-status',project.status));
  const tags=el('div','dialog-tags');(project.techStack||project.tags||[]).forEach(t=>tags.append(el('span','',t)));root.append(tags);
+ if(project.publicDemos?.length){
+  const intro=el('section','dialog-section');intro.append(el('h3','','Demonstrações públicas'),el('p','','Os links abaixo contêm recortes sanitizados com dados fictícios. O escopo e as tecnologias de cada demonstração são próprios; não representam acesso ao sistema completo nem prontidão para produção.'));root.append(intro);
+  for(const demo of project.publicDemos){
+   const section=el('section','dialog-section public-demo');section.append(el('h3','',demo.title),el('p','dialog-status',demo.status),el('p','',demo.description));
+   const demoTags=el('div','dialog-tags');demo.technologies.forEach(t=>demoTags.append(el('span','',t)));section.append(demoTags,el('p','',demo.limitations));
+   const link=el('a','button secondary','Ver demonstração no GitHub ↗');link.href=demo.repositoryUrl;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','Ver demonstração: '+demo.title);section.append(link);root.append(section);
+  }
+ }
  if(project.repositoryUrl){const link=el('a','button primary','Ver repositório público');link.href=project.repositoryUrl;link.target='_blank';link.rel='noopener noreferrer';link.style.marginTop='24px';root.append(link);}
  dialog.showModal();document.body.style.overflow='hidden';
 }
@@ -42,7 +50,7 @@ function render(){
  for(const p of found){
   const card=el('button','project-tile');card.type='button';
   const visual=el('span','tile-visual');visual.append(projectImage(p,'tile-image'),el('span','tile-category',p.category));
-  const body=el('span','tile-body');body.append(el('span','tile-title',p.title),el('span','tile-status',p.status));
+  const body=el('span','tile-body');body.append(el('span','tile-title',p.title),el('span','tile-status',p.status+(p.publicDemos?.length?' · Código demonstrativo':'')));
   card.append(visual,body);card.setAttribute('aria-label','Abrir detalhes: '+p.title);card.addEventListener('click',()=>detail(p));$('project-index').append(card);
  }
  if(!found.length)$('project-index').append(el('p','empty-results','Nenhum projeto com esses termos. Tente outra busca ou selecione “Todos”.'));
@@ -54,7 +62,7 @@ startSculpture($('sculpture'),$('motion-toggle'));
 initPlatformer($('robot-platformer'));
 initScrollScenes();
 
-import './offline.js?v=20261010-14';
+import './offline.js?v=20261011-15';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}
