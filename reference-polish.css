@@ -22,10 +22,12 @@ html[data-scroll-scenes] .motion-hero h1 span{font-style:normal;font-weight:600;
 @media(max-width:760px){.hero .profile-photo{width:96px;height:96px;flex-basis:96px}.hero .hero-intro{gap:17px}}
 @media(max-width:380px){.hero .profile-photo{width:86px;height:86px;flex-basis:86px}.hero .hero-intro{gap:13px}}
 
-/* A shared text edge and bounded width keep the sculpture caption readable. */
+/* Center the control and caption on the sculpture's rendering area. */
 #inicio .visual-controls {
   position: absolute;
-  right: 12%;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   bottom: 103px;
   width: 240px;
   max-width: calc(100% - 52px);
@@ -49,8 +51,8 @@ html[data-scroll-scenes] .motion-hero h1 span{font-style:normal;font-weight:600;
 }
 html[data-scroll-scenes] #inicio .visual-controls { bottom: 98px; }
 @media(max-width:760px) {
-  #inicio .visual-controls { top: 29px; bottom: auto; right: 8%; }
-  html[data-scroll-scenes] #inicio .visual-controls { top: auto; bottom: 65px; right: 26px; }
+  #inicio .visual-controls { top: 29px; bottom: auto; }
+  html[data-scroll-scenes] #inicio .visual-controls { top: auto; bottom: 65px; }
   html[data-scroll-scenes] #inicio .hero-copy { padding-top: 330px; }
 }
 @media(max-width:420px) {
