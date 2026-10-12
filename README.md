@@ -1,6 +1,6 @@
 # Adiel Alves · Portfolio
 
-Responsive, Portuguese-language portfolio built for GitHub Pages. Plain HTML, CSS and JavaScript, with no runtime package dependencies or external CDN. Includes 25 projects, accessible project details, filters and search, reduced-motion handling and a lightweight procedural WebGL sculpture with a projected-mesh SVG fallback.
+Responsive, Portuguese-language portfolio built for GitHub Pages. Plain HTML, CSS and JavaScript, with no runtime package dependencies. The Meta Pixel loads its official external script. Includes 25 projects, accessible project details, filters and search, reduced-motion handling and a lightweight procedural WebGL sculpture with a projected-mesh SVG fallback.
 
 ## Preview and check
 
@@ -33,7 +33,8 @@ No Actions workflow or extra permissions are necessary for branch deployment. Th
 - The three featured projects use `featured: true`. The compact index uses four original editorial illustrations by category; they are not screenshots of production systems.
 - Never publish private repositories, secrets, unapproved contact information, identity documents, real customer records, or client names.
 - Contact URLs are in `index.html`. Repository links are individually included only when suitable for public attribution.
-- The site contains no tracking, forms, cookies, external fonts, or analytics.
+- The site uses Meta/Facebook Pixel ID `2015448059159712` for a single `PageView` per document load. It loads `https://connect.facebook.net/en_US/fbevents.js` and can use cookies and send page/device information to Meta. With JavaScript disabled, a hidden image reports the same event. No extra events, advanced matching, personal identifiers or server-side integration are configured.
+- No consent mechanism was present when the Pixel was added; it loads on page visits. Any future consent control must gate both the script and the noscript fallback. The site has no forms or external fonts.
 
 ## Motion and 3D
 
@@ -55,11 +56,11 @@ After any public CSS/JavaScript change, update the shared `?v=` release value on
 
 The page uses natural document scrolling, with pinned scene elements and reversible scroll-driven typography and cards. There is no wheel/touch interception or artificial scroll speed. Anchors and keyboard scrolling remain native. The three-stage automation story retains its sticky diagram on suitable desktop viewports; mobile, short screens and reduced motion use a simpler flow.
 
-The Amostras area contains BYTE / EM MISSÃO, an original JavaScript platformer. It includes three sectors, obstacles, drones, checkpoints, lives, score, pause and restart. Missions are grounded in the catalog: lot validation/confirmation, dependent print diagnostics with an ordered queue, and partial synchronization with recovery of only pending changes. Post-level summaries explain the analogy and preserve the real project status. It starts only after the visitor chooses to play. Keyboard and touch controls are provided. There is no production API, analytics or stored player data. All visuals are original procedural artwork.
+The Amostras area contains BYTE / EM MISSÃO, an original JavaScript platformer. It includes three sectors, obstacles, drones, checkpoints, lives, score, pause and restart. Missions are grounded in the catalog: lot validation/confirmation, dependent print diagnostics with an ordered queue, and partial synchronization with recovery of only pending changes. Post-level summaries explain the analogy and preserve the real project status. It starts only after the visitor chooses to play. Keyboard and touch controls are provided. There is no production API or stored player data. The site-wide Meta Pixel reports page visits; the game sends no gameplay events. All visuals are original procedural artwork.
 
 ## Offline support
 
-The user explicitly saves the app using the offline button. A service worker precaches this release's local assets and reports readiness only after installation/activation and cache verification. Navigation tries the network first and falls back to the cached homepage; versioned local assets are served from the matching cache. Old portfolio cache versions are removed on activation. The online app checks for service-worker updates on later visits. GitHub/LinkedIn links and other external resources are never cached and need internet.
+The user explicitly saves the app using the offline button. A service worker precaches this release's local assets and reports readiness only after installation/activation and cache verification. Navigation tries the network first and falls back to the cached homepage; versioned local assets are served from the matching cache. Old portfolio cache versions are removed on activation. The online app checks for service-worker updates on later visits. GitHub/LinkedIn links and other external resources, including the Meta Pixel script and tracking requests, are never cached and need internet.
 
 Installation is offered only when the browser supplies its install prompt. Safari users receive the standard Add to Home Screen instruction. Storage can be cleared or evicted by the browser; this is not a permanent download guarantee. Real offline/device testing must be reported separately from unit or online checks.
 
