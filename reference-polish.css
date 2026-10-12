@@ -21,3 +21,38 @@ html[data-scroll-scenes] .motion-hero h1 span{font-style:normal;font-weight:600;
 .hero .hero-intro{gap:23px}
 @media(max-width:760px){.hero .profile-photo{width:96px;height:96px;flex-basis:96px}.hero .hero-intro{gap:17px}}
 @media(max-width:380px){.hero .profile-photo{width:86px;height:86px;flex-basis:86px}.hero .hero-intro{gap:13px}}
+
+/* A shared text edge and bounded width keep the sculpture caption readable. */
+#inicio .visual-controls {
+  position: absolute;
+  right: 12%;
+  bottom: 103px;
+  width: 240px;
+  max-width: calc(100% - 52px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 4;
+}
+#inicio .visual-controls .motion-toggle,
+#inicio .visual-controls .visual-label {
+  position: static;
+  inset: auto;
+  max-width: 100%;
+  text-align: center;
+}
+#inicio .visual-controls .visual-label {
+  width: 100%;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+html[data-scroll-scenes] #inicio .visual-controls { bottom: 98px; }
+@media(max-width:760px) {
+  #inicio .visual-controls { top: 29px; bottom: auto; right: 8%; }
+  html[data-scroll-scenes] #inicio .visual-controls { top: auto; bottom: 65px; right: 26px; }
+  html[data-scroll-scenes] #inicio .hero-copy { padding-top: 330px; }
+}
+@media(max-width:420px) {
+  html[data-scroll-scenes] #inicio .hero-copy { padding-top: 300px; }
+}
