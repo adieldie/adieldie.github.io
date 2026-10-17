@@ -105,3 +105,8 @@ assert.ok(opening.includes('skill-thumb')&&opening.includes('assets/marketing/ar
 assert.ok(editorial.includes('.cloud-front{z-index:1;}')&&editorial.includes('aspect-ratio:1;bottom:8px;'),'Portrait decorations stay behind the face and keep a round sun');
 assert.ok(editorial.includes('#sobre .approach p{color:#e1d5c7')&&editorial.includes('#sobre .approach h3{color:#fffaf4'),'Approach cards have explicit high-contrast foregrounds');
 console.log('PASS: visual skill cards, unobscured portrait and explicit approach contrast');
+
+for(const icon of ['python','javascript']){await stat('assets/skills/'+icon+'.svg');assert.ok(sw.includes('assets/skills/'+icon+'.svg'));assert.ok(opening.includes('assets/skills/'+icon+'.svg'));}
+assert.ok(opening.includes('alt="Logo da linguagem Python"')&&opening.includes('alt="Logo JavaScript"'),'Technology marks have accessible names');
+assert.ok(opening.includes('Banco de dados SQL')&&opening.includes('Suporte e diagnóstico de computadores'),'Generic categories use accurately labelled symbols');
+console.log('PASS: local technology logos, accessible generic symbols and offline cache coverage');
