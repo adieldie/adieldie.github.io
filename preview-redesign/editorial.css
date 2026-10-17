@@ -227,4 +227,10 @@ dialog{border-radius:18px;background:var(--panel);color:var(--text);border-color
 @media(max-width:390px){.portrait-orbit{width:163px;height:auto;bottom:34px;}}
 @media(prefers-reduced-motion:reduce){.skill-note,.skill-note:nth-child(even){transform:none;}}
 
+/* Real technology marks and original generic category symbols. */
+.skill-thumb.skill-brand>img{object-fit:contain;object-position:center;padding:12px;}
+.skill-trademark{position:absolute;right:5px;top:4px;font:9px Arial,sans-serif;color:#f8f3ec;}
+.skill-symbol{width:42px;height:42px;display:block;color:#ffb36c;}
+@media(max-width:700px){.skill-thumb.skill-brand>img{padding:10px;}.skill-symbol{width:36px;height:36px;}}
+
 .preview-notice{background:#ff8a35;color:#17100c;text-align:center;font:600 11px/1.5 Arial,sans-serif;padding:8px 20px}.preview-notice a{text-decoration:underline;text-underline-offset:3px;margin-left:5px}

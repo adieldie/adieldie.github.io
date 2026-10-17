@@ -226,3 +226,9 @@ dialog{border-radius:18px;background:var(--panel);color:var(--text);border-color
 @media(max-width:700px){.portrait-orbit{width:185px;max-width:82%;height:auto;bottom:34px;}#inicio.editorial-hero .profile-photo{margin-bottom:34px;}.portrait-stage::after{bottom:24px;}.skill-note{min-width:214px;min-height:88px;padding:9px 14px 9px 9px;gap:12px;}.skill-thumb{width:66px;height:66px;}.skill-note strong{font-size:14px;}.skill-note small{font-size:7px;letter-spacing:.7px;margin-bottom:6px;}#sobre .approach p{font-size:13px;}}
 @media(max-width:390px){.portrait-orbit{width:163px;height:auto;bottom:34px;}}
 @media(prefers-reduced-motion:reduce){.skill-note,.skill-note:nth-child(even){transform:none;}}
+
+/* Real technology marks and original generic category symbols. */
+.skill-thumb.skill-brand>img{object-fit:contain;object-position:center;padding:12px;}
+.skill-trademark{position:absolute;right:5px;top:4px;font:9px Arial,sans-serif;color:#f8f3ec;}
+.skill-symbol{width:42px;height:42px;display:block;color:#ffb36c;}
+@media(max-width:700px){.skill-thumb.skill-brand>img{padding:10px;}.skill-symbol{width:36px;height:36px;}}

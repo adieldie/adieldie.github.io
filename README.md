@@ -100,3 +100,11 @@ These visual pieces are described as creative direction and AI-assisted creation
 New visitors start in dark mode; an explicit local light/system preference is respected. The layout uses ordinary document scrolling with no pinned hero or opacity-based text reveal. Technology artwork and the game keep their original modules and controls.
 
 A review copy under `preview-redesign/` must be generated separately: add noindex, isolate the theme-storage key, omit the Meta Pixel, manifest and offline/service-worker initialization, and keep every asset relative to the preview directory. Do not replace the root page when publishing a review copy.
+
+## Technology symbols
+
+The skill ribbon uses the unaltered Python logo device supplied by the Python Software Foundation: https://www.python.org/community/logos/ (https://www.python.org/psf/trademarks/). It identifies the Python language used in the listed projects and does not imply sponsorship. Python and the Python logos are trademarks or registered trademarks of the Python Software Foundation. A small trademark symbol accompanies the device.
+
+JavaScript uses Simple Icons' SVG (CC0 1.0), shown in JavaScript yellow: https://github.com/simple-icons/simple-icons/blob/develop/icons/javascript.svg . License: https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md . Trademark rights are separate from copyright licensing.
+
+SQL, support, automation and integration symbols are original generic SVG icons, not language or vendor logos. All icons are stored locally, have accessible names, and retain an adjacent visible label. The visual skill cards use the same approved Telebier artwork and Reel preview assets shown in the marketing chapter.

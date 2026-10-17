@@ -9,3 +9,5 @@ await copyFile('assets/adiel-alves-linkedin.webp','dist/assets/adiel-alves-linke
 await cp('assets/marketing','dist/assets/marketing',{recursive:true});
 
 await copyFile('assets/adiel-portrait-mask.png','dist/assets/adiel-portrait-mask.png');
+
+await cp('assets/skills','dist/assets/skills',{recursive:true});
