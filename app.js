@@ -1,9 +1,9 @@
-import { initTheme } from './theme.js?v=20261017-01';
-import { initPlatformer } from './platformer.js?v=20261017-01';
-import { initScrollScenes } from './motion-scenes.js?v=20261017-01';
-import { startSculpture } from './sculpture.js?v=20261017-01';
-import { projects } from './projects.js?v=20261017-01';
-import { filterProjects } from './project-utils.js?v=20261017-01';
+import { initTheme } from './theme.js?v=20261017-02';
+import { initPlatformer } from './platformer.js?v=20261017-02';
+import { initScrollScenes } from './motion-scenes.js?v=20261017-02';
+import { startSculpture } from './sculpture.js?v=20261017-02';
+import { projects } from './projects.js?v=20261017-02';
+import { filterProjects } from './project-utils.js?v=20261017-02';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -62,7 +62,7 @@ startSculpture($('sculpture'),$('motion-toggle'));
 initPlatformer($('robot-platformer'));
 initScrollScenes();
 
-import './offline.js?v=20261017-01';
+import './offline.js?v=20261017-02';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}

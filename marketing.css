@@ -47,3 +47,39 @@
 
 .marketing-art-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.marketing-art-grid .marketing-art{aspect-ratio:1/1;}.programming-overview{padding-block:100px 38px;display:grid;grid-template-columns:1.15fr 1fr;gap:72px;align-items:end;}.programming-overview h2{font-size:clamp(38px,4.4vw,65px);letter-spacing:-2.7px;margin:0;}.programming-overview p:not(.eyebrow){color:var(--muted);font-size:16px;line-height:1.8;max-width:460px;}.programming-actions{display:flex;align-items:center;gap:25px;flex-wrap:wrap;}.hero-actions{flex-wrap:wrap;gap:18px;}
 @media(max-width:850px){.programming-overview{grid-template-columns:1fr;gap:25px;padding-block:70px 25px;}}@media(max-width:600px){.marketing-art-grid{grid-template-columns:1fr;}.programming-overview{padding-block:56px 20px;}.programming-overview h2{font-size:40px;letter-spacing:-1.7px;}.programming-overview p:not(.eyebrow){font-size:14px;}.hero-actions{gap:12px;}}
+
+/* Compact phone introduction: bring the words and area shortcuts above the fold. */
+@media (max-width: 760px) {
+  #inicio.hero .hero-copy,
+  html[data-scroll-scenes] #inicio.motion-hero .hero-copy {
+    padding: 140px 12px 40px;
+    max-width: 100%;
+  }
+  #inicio.hero h1,
+  html[data-scroll-scenes] #inicio.motion-hero h1 {
+    font-size: clamp(30px, 7.7vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -1.45px;
+    margin-bottom: 18px;
+    max-width: 100%;
+  }
+  #inicio .hero-intro { margin-bottom: 18px; gap: 12px; }
+  #inicio .profile-photo { width: 54px; height: 54px; }
+  #inicio .identity-name { font-size: 15px; margin-bottom: 4px; }
+  #inicio .hero-description { font-size: 13px; line-height: 1.65; max-width: 390px; }
+  #inicio .hero-actions { margin-top: 20px; gap: 12px; }
+  #inicio .button { font-size: 11px; min-height: 44px; padding: 13px 14px; gap: 13px; }
+  #inicio .location { margin-top: 18px; font-size: 9px; }
+  #inicio.hero .visual,
+  html[data-scroll-scenes] #inicio.motion-hero .visual { height: 230px; width: 100%; top: -24px; right: 0; }
+  #inicio .visual-label { right: 12px; bottom: 16px; top: auto; font-size: 7px; }
+  #inicio .motion-toggle { right: 12px; bottom: 47px; top: auto; min-height: 44px; }
+  #inicio .hero-bottom { padding-block: 16px; }
+}
+@media (max-width: 420px) {
+  #inicio.hero .hero-copy,
+  html[data-scroll-scenes] #inicio.motion-hero .hero-copy { padding: 120px 10px 32px; }
+  #inicio.hero .visual,
+  html[data-scroll-scenes] #inicio.motion-hero .visual { height: 205px; top: -24px; }
+  #inicio .profile-photo { width: 50px; height: 50px; }
+}
