@@ -92,3 +92,11 @@ assert.ok(html.includes('editorial.css?v='+release)&&sw.includes('editorial.css?
 assert.ok(opening.includes('portrait-stage')&&opening.includes('assets/adiel-alves-linkedin.webp'),'Editorial hero uses the existing real portrait');
 assert.ok(!html.includes('Aswad')&&!html.includes('Helmi')&&!html.includes('Lorem ipsum'),'Reference author content is not copied');
 assert.ok(editorial.includes('prefers-reduced-motion'),'Editorial motion respects preferences');
+
+assert.ok(html.includes('data-skill-ribbon')&&html.includes('id="ribbon-toggle"'),'Skill ribbon has a pause control');
+assert.ok(motion.includes('preference.matches')&&motion.includes('aria-pressed'),'Ribbon respects reduced motion and exposes pause state');
+assert.ok(editorial.includes("mask-image:url('assets/adiel-portrait-mask.png')"),'Original portrait pixels use only a transparent silhouette mask');
+await stat('assets/adiel-portrait-mask.png');
+assert.ok(html.indexOf('id="sobre"')<html.indexOf('id="marketing"'),'About chapter introduces the work');
+assert.ok(marketing.includes('CASE 01')&&marketing.includes('CASE 02'),'Creative cases are clearly numbered');
+console.log('PASS: real portrait mask, accessible skill ribbon and editorial chapter/case hierarchy');

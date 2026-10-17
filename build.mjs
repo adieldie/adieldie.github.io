@@ -7,3 +7,5 @@ await copyFile('assets/favicon.svg','dist/assets/favicon.svg');
 await copyFile('assets/adiel-alves-linkedin.webp','dist/assets/adiel-alves-linkedin.webp');console.log('Static site built in dist/');
 
 await cp('assets/marketing','dist/assets/marketing',{recursive:true});
+
+await copyFile('assets/adiel-portrait-mask.png','dist/assets/adiel-portrait-mask.png');

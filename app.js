@@ -1,9 +1,9 @@
-import { initTheme } from './theme.js?v=20261017-r2';
-import { initPlatformer } from './platformer.js?v=20261017-r2';
-import { initScrollScenes } from './motion-scenes.js?v=20261017-r2';
-import { startSculpture } from './sculpture.js?v=20261017-r2';
-import { projects } from './projects.js?v=20261017-r2';
-import { filterProjects } from './project-utils.js?v=20261017-r2';
+import { initTheme } from './theme.js?v=20261017-r3';
+import { initPlatformer } from './platformer.js?v=20261017-r3';
+import { initScrollScenes } from './motion-scenes.js?v=20261017-r3';
+import { startSculpture } from './sculpture.js?v=20261017-r3';
+import { projects } from './projects.js?v=20261017-r3';
+import { filterProjects } from './project-utils.js?v=20261017-r3';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -38,8 +38,9 @@ featured.forEach((p,i)=>{
  const status=el('span','card-status',p.status);category.append(status);
  body.append(category,el('h3','',p.title),el('p','card-summary',p.summary));
  const tags=el('div','card-tags');(p.techStack||[]).slice(0,3).forEach(tag=>tags.append(el('span','',tag)));body.append(tags);
- if(i===0){const context=el('div','card-context');context.append(el('span','','O CONTEXTO'),el('p','',p.narrative));body.append(context);}
- const button=el('button','card-button','Conhecer projeto');button.type='button';button.append(el('span','css-arrow',''));button.setAttribute('aria-label','Conhecer projeto: '+p.title);button.addEventListener('click',()=>detail(p));body.append(button);
+ const context=el('div','card-context');context.append(el('span','','O CONTEXTO'),el('p','',p.narrative||p.summary));body.append(context);
+ const delivery=el('div','card-context');delivery.append(el('span','','ENTREGA & ESTÁGIO'),el('p','',Array.isArray(p.outcome)?p.outcome.join(' '):p.outcome));body.append(delivery);
+ const button=el('button','card-button','Explorar este case');button.type='button';button.append(el('span','css-arrow',''));button.setAttribute('aria-label','Conhecer projeto: '+p.title);button.addEventListener('click',()=>detail(p));body.append(button);
  card.append(image,body);$('featured').append(card);
 });
 let filter='Todos';
@@ -62,7 +63,7 @@ startSculpture($('sculpture'),$('motion-toggle'));
 initPlatformer($('robot-platformer'));
 initScrollScenes();
 
-import './offline.js?v=20261017-r2';
+import './offline.js?v=20261017-r3';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}
