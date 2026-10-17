@@ -1,9 +1,9 @@
-import { initTheme } from './theme.js?v=20261017-r1';
-import { initPlatformer } from './platformer.js?v=20261017-r1';
-import { initScrollScenes } from './motion-scenes.js?v=20261017-r1';
-import { startSculpture } from './sculpture.js?v=20261017-r1';
-import { projects } from './projects.js?v=20261017-r1';
-import { filterProjects } from './project-utils.js?v=20261017-r1';
+import { initTheme } from './theme.js?v=20261017-r2';
+import { initPlatformer } from './platformer.js?v=20261017-r2';
+import { initScrollScenes } from './motion-scenes.js?v=20261017-r2';
+import { startSculpture } from './sculpture.js?v=20261017-r2';
+import { projects } from './projects.js?v=20261017-r2';
+import { filterProjects } from './project-utils.js?v=20261017-r2';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');
@@ -19,7 +19,7 @@ function detail(project) {
   for(const demo of project.publicDemos){
    const section=el('section','dialog-section public-demo');section.append(el('h3','',demo.title),el('p','dialog-status',demo.status),el('p','',demo.description));
    const demoTags=el('div','dialog-tags');demo.technologies.forEach(t=>demoTags.append(el('span','',t)));section.append(demoTags,el('p','',demo.limitations));
-   const link=el('a','button secondary','Ver demonstração no GitHub ↗');link.href=demo.repositoryUrl;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','Ver demonstração: '+demo.title);section.append(link);root.append(section);
+   const link=el('a','button secondary','Ver demonstração no GitHub');link.href=demo.repositoryUrl;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','Ver demonstração: '+demo.title);section.append(link);root.append(section);
   }
  }
  if(project.repositoryUrl){const link=el('a','button primary','Ver repositório público');link.href=project.repositoryUrl;link.target='_blank';link.rel='noopener noreferrer';link.style.marginTop='24px';root.append(link);}
@@ -62,7 +62,7 @@ startSculpture($('sculpture'),$('motion-toggle'));
 initPlatformer($('robot-platformer'));
 initScrollScenes();
 
-import './offline.js?v=20261017-r1';
+import './offline.js?v=20261017-r2';
 
 $('copy-phone').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText('+5575991170685');$('copy-phone-status').textContent='Número copiado: +55 (75) 99117-0685';}

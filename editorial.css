@@ -134,3 +134,14 @@ dialog{border-radius:18px;background:var(--panel);color:var(--text);border-color
 }
 @media(max-width:390px){.wrap{width:calc(100% - 32px);}.header.wrap{padding-inline:16px;}.header nav{font-size:11px;gap:1px;}.header nav>a{padding-inline:5px;}.header nav .nav-contact{font-size:11px;padding-inline:10px;}#inicio .hero-main{gap:8px;grid-template-columns:1.12fr .88fr;}#inicio.editorial-hero h1,html[data-scroll-scenes] #inicio.editorial-hero h1{font-size:31px;letter-spacing:-1.3px;}#inicio .hero-role{font-size:16px;}#inicio.editorial-hero .hero-description{font-size:12px;}.hero-contact{font-size:10px;gap:8px;}.portrait-stage{height:255px;}.portrait-orbit{height:175px;width:175px;}#inicio.editorial-hero .profile-photo{width:148px;height:183px;margin-bottom:31px;}.portrait-word{font-size:58px;top:34px;}.portrait-tag{font-size:7px;padding:7px 6px;}.tag-creation{top:83px;left:-8px;}.tag-code{right:-2px;bottom:60px;}.portrait-caption{bottom:26px;font-size:5px;}.interest-card strong{font-size:18px;}.interest-description{font-size:11px;}.interest-card{padding:15px 12px;}.marketing-intro h2,#programacao h2{font-size:39px;}#marketing.marketing-section{padding-inline:16px;}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.interest-card,.interest-arrow,.button,.marketing-art img{transition:none!important;animation:none!important;}.interest-card:hover,.button:hover,.marketing-art:hover img{transform:none!important;}}
+
+/* Final legibility pass: keep the portrait clear and the navigation readable. */
+#inicio.editorial-hero h1 span{font-family:Arial,Helvetica,sans-serif;font-style:normal;}
+.tag-code{bottom:38px;}
+@media(max-width:700px){.header nav{font-size:13px;gap:3px;}.header nav>a{padding-inline:4px;}.header nav .nav-contact{font-size:13px;padding-inline:11px;}#inicio.editorial-hero .hero-description{font-size:14px;line-height:1.5;}.tag-code{bottom:29px;}.portrait-caption{display:none;}}
+@media(max-width:390px){.header nav{font-size:12px;}.header nav .nav-contact{font-size:12px;padding-inline:10px;}.tag-code{bottom:24px;}#inicio.editorial-hero .hero-description{font-size:13px;}}
+
+@media(min-width:361px) and (max-width:700px){.header nav,.header nav .nav-contact{font-size:13px;}}
+
+/* Bound portrait decoration locally instead of hiding page-wide overflow. */
+@media(max-width:700px){.portrait-stage{overflow:clip;}.portrait-word{font-size:clamp(48px,14vw,64px);letter-spacing:-5px;}.tag-creation{left:4px;transform:rotate(-4deg);}.tag-code{right:4px;transform:rotate(4deg);}.portrait-tag{max-width:calc(100% - 8px);}}

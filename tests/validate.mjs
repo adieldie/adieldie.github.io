@@ -85,7 +85,7 @@ assert.ok(!marketing.includes('↗'),'Marketing arrows are font-independent vect
 console.log('PASS: compact dual-area entry, native anchors, relocated illustration, no pinning and reduced-motion support');
 
 assert.ok(opening.indexOf('id="hero-title"')<opening.indexOf('id="interest-title"'),'Personal introduction precedes interest selector');
-assert.ok(opening.includes('Sou Adiel Alves.')&&opening.includes('Adiel Alves.</span>'),'Personal presentation is retained');
+assert.ok(opening.includes('Crio conteúdo visual para marcas, sistemas e automações.')&&opening.includes('Adiel Alves.</span>'),'Personal presentation is retained');
 
 const editorial=await readFile('editorial.css','utf8');
 assert.ok(html.includes('editorial.css?v='+release)&&sw.includes('editorial.css?v='+release),'Editorial design is versioned and cached');
