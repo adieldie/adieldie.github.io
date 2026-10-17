@@ -100,3 +100,8 @@ await stat('assets/adiel-portrait-mask.png');
 assert.ok(html.indexOf('id="sobre"')<html.indexOf('id="marketing"'),'About chapter introduces the work');
 assert.ok(marketing.includes('CASE 01')&&marketing.includes('CASE 02'),'Creative cases are clearly numbered');
 console.log('PASS: real portrait mask, accessible skill ribbon and editorial chapter/case hierarchy');
+
+assert.ok(opening.includes('skill-thumb')&&opening.includes('assets/marketing/arte-concordia-teo.jpg'),'Skill ribbon includes real visual examples');
+assert.ok(editorial.includes('.cloud-front{z-index:1;}')&&editorial.includes('aspect-ratio:1;bottom:8px;'),'Portrait decorations stay behind the face and keep a round sun');
+assert.ok(editorial.includes('#sobre .approach p{color:#e1d5c7')&&editorial.includes('#sobre .approach h3{color:#fffaf4'),'Approach cards have explicit high-contrast foregrounds');
+console.log('PASS: visual skill cards, unobscured portrait and explicit approach contrast');
