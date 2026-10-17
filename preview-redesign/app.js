@@ -1,9 +1,9 @@
-import { initTheme } from './theme.js?v=20261017-r3';
-import { initPlatformer } from './platformer.js?v=20261017-r3';
-import { initScrollScenes } from './motion-scenes.js?v=20261017-r3';
-import { startSculpture } from './sculpture.js?v=20261017-r3';
-import { projects } from './projects.js?v=20261017-r3';
-import { filterProjects } from './project-utils.js?v=20261017-r3';
+import { initTheme } from './theme.js?v=20261017-r4';
+import { initPlatformer } from './platformer.js?v=20261017-r4';
+import { initScrollScenes } from './motion-scenes.js?v=20261017-r4';
+import { startSculpture } from './sculpture.js?v=20261017-r4';
+import { projects } from './projects.js?v=20261017-r4';
+import { filterProjects } from './project-utils.js?v=20261017-r4';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => { const node=document.createElement(tag); if(className)node.className=className; if(text!==undefined)node.textContent=text; return node; };
 const dialog=$('project-dialog');

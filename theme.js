@@ -8,7 +8,7 @@ export function initTheme() {
   if (root.dataset.themeControlReady === 'true') return;
   root.dataset.themeControlReady = 'true';
   const media = window.matchMedia('(prefers-color-scheme: dark)');
-  let preference = 'system';
+  let preference = 'dark';
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
     if (isPreference(stored)) preference = stored;
@@ -45,7 +45,7 @@ export function initTheme() {
     root.style.colorScheme = theme;
     select.value = preference;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = theme === 'dark' ? '#090e12' : '#f6f8f5';
+    if (meta) meta.content = theme === 'dark' ? '#080808' : '#f5f1eb';
     window.dispatchEvent(new CustomEvent('portfolio:themechange', { detail: { preference, theme, changed } }));
   };
   select.addEventListener('change', () => {
@@ -60,7 +60,7 @@ export function initTheme() {
   window.addEventListener('storage', event => {
     // A reset or a change in another tab uses the same validated preference.
     if (event.key !== THEME_STORAGE_KEY && event.key !== null) return;
-    preference = isPreference(event.newValue) ? event.newValue : 'system';
+    preference = isPreference(event.newValue) ? event.newValue : 'dark';
     apply();
   });
   apply();

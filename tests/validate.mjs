@@ -78,11 +78,30 @@ assert.ok(opening.includes('href="#marketing"')&&opening.includes('href="#progra
 assert.ok(!opening.includes('id="sculpture"'),'Decorative 3D no longer delays the entry choices');
 assert.ok(html.match(/<section class="programming-overview[\s\S]*?id="sculpture"[\s\S]*?<\/section>/),'3D work is retained with programming');
 const motion=await readFile('motion-scenes.js','utf8');
-assert.ok(motion.includes('let canPin = !compactIntro'),'Compact opening never pins or reserves a scroll runway');
+assert.ok(!motion.includes('scroll-scenes-pinned')&&!motion.includes('preventDefault'),'Editorial layout uses native flow without scroll interception');
 const marketingCss=await readFile('marketing.css','utf8');
 assert.ok(marketingCss.includes('@media(prefers-reduced-motion:reduce)')&&marketingCss.includes('.interest-card,.interest-arrow{animation:none;transition:none;}'),'Entry animation respects reduced motion');
 assert.ok(!marketing.includes('↗'),'Marketing arrows are font-independent vectors');
 console.log('PASS: compact dual-area entry, native anchors, relocated illustration, no pinning and reduced-motion support');
 
 assert.ok(opening.indexOf('id="hero-title"')<opening.indexOf('id="interest-title"'),'Personal introduction precedes interest selector');
-assert.ok(opening.includes('Sou Adiel Alves.')&&opening.includes('Criação e tecnologia.'),'Personal presentation is retained');
+assert.ok(opening.includes('Crio conteúdo visual para marcas, sistemas e automações.')&&opening.includes('Adiel Alves.</span>'),'Personal presentation is retained');
+
+const editorial=await readFile('editorial.css','utf8');
+assert.ok(html.includes('editorial.css?v='+release)&&sw.includes('editorial.css?v='+release),'Editorial design is versioned and cached');
+assert.ok(opening.includes('portrait-stage')&&opening.includes('assets/adiel-alves-linkedin.webp'),'Editorial hero uses the existing real portrait');
+assert.ok(!html.includes('Aswad')&&!html.includes('Helmi')&&!html.includes('Lorem ipsum'),'Reference author content is not copied');
+assert.ok(editorial.includes('prefers-reduced-motion'),'Editorial motion respects preferences');
+
+assert.ok(html.includes('data-skill-ribbon')&&html.includes('id="ribbon-toggle"'),'Skill ribbon has a pause control');
+assert.ok(motion.includes('preference.matches')&&motion.includes('aria-pressed'),'Ribbon respects reduced motion and exposes pause state');
+assert.ok(editorial.includes("mask-image:url('assets/adiel-portrait-mask.png')"),'Original portrait pixels use only a transparent silhouette mask');
+await stat('assets/adiel-portrait-mask.png');
+assert.ok(html.indexOf('id="sobre"')<html.indexOf('id="marketing"'),'About chapter introduces the work');
+assert.ok(marketing.includes('CASE 01')&&marketing.includes('CASE 02'),'Creative cases are clearly numbered');
+console.log('PASS: real portrait mask, accessible skill ribbon and editorial chapter/case hierarchy');
+
+assert.ok(opening.includes('skill-thumb')&&opening.includes('assets/marketing/arte-concordia-teo.jpg'),'Skill ribbon includes real visual examples');
+assert.ok(editorial.includes('.cloud-front{z-index:1;}')&&editorial.includes('aspect-ratio:1;bottom:8px;'),'Portrait decorations stay behind the face and keep a round sun');
+assert.ok(editorial.includes('#sobre .approach p{color:#e1d5c7')&&editorial.includes('#sobre .approach h3{color:#fffaf4'),'Approach cards have explicit high-contrast foregrounds');
+console.log('PASS: visual skill cards, unobscured portrait and explicit approach contrast');
