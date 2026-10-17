@@ -70,3 +70,16 @@ for(const m of marketing.matchAll(/<img[^>]+>/g)){
 assert.ok(!/\b\d+\s*(%|vendas|conversões|clientes|visualizações)\b/i.test(marketing),'No unsubstantiated performance metrics');
 assert.ok(!/MARKETING_CASES|MARKETING_ARTS/.test(marketing),'No placeholder sections remain');
 console.log('PASS: marketing anchor/CTA, exact Reel sources, credits, lazy local previews, offline coverage and no unproven metrics');
+
+const opening=html.match(/<section id="inicio"[\s\S]*?<\/section>/)?.[0];
+assert.ok(opening?.includes('dual-intro')&&opening.includes('Qual o seu <span>interesse?</span>'),'Compact dual opening is present');
+assert.equal((opening.match(/class="interest-card /g)||[]).length,2,'Two clear area choices');
+assert.ok(opening.includes('href="#marketing"')&&opening.includes('href="#programacao"'),'Both area choices use native anchors');
+assert.ok(!opening.includes('id="sculpture"'),'Decorative 3D no longer delays the entry choices');
+assert.ok(html.match(/<section class="programming-overview[\s\S]*?id="sculpture"[\s\S]*?<\/section>/),'3D work is retained with programming');
+const motion=await readFile('motion-scenes.js','utf8');
+assert.ok(motion.includes('let canPin = !compactIntro'),'Compact opening never pins or reserves a scroll runway');
+const marketingCss=await readFile('marketing.css','utf8');
+assert.ok(marketingCss.includes('@media(prefers-reduced-motion:reduce)')&&marketingCss.includes('.interest-card,.interest-arrow{animation:none;transition:none;}'),'Entry animation respects reduced motion');
+assert.ok(!marketing.includes('↗'),'Marketing arrows are font-independent vectors');
+console.log('PASS: compact dual-area entry, native anchors, relocated illustration, no pinning and reduced-motion support');

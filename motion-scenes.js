@@ -19,6 +19,7 @@ export function initScrollScenes() {
   const hero = document.querySelector('.hero');
   if (!hero) return;
   root.dataset.scrollScenes = 'ready';
+  const compactIntro = hero.classList.contains('dual-intro');
   const preference = matchMedia('(prefers-reduced-motion: reduce)');
   const compact = matchMedia('(max-width: 760px)');
   const records = [];
@@ -122,7 +123,7 @@ export function initScrollScenes() {
     root.classList.toggle('scroll-scenes-mobile', mobile);
     // A small screen gets natural flow with only modest parallax: no tall
     // pinned panel can trap its controls outside the available viewport.
-    let canPin = !reduced && !mobile && availableHeight >= 650;
+    let canPin = !compactIntro && !reduced && !mobile && availableHeight >= 650;
     root.classList.toggle('scroll-scenes-pinned', canPin);
     hero.style.removeProperty('--hero-scene-height');
     hero.style.removeProperty('--hero-stage-height');
