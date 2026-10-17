@@ -72,7 +72,7 @@ assert.ok(!/MARKETING_CASES|MARKETING_ARTS/.test(marketing),'No placeholder sect
 console.log('PASS: marketing anchor/CTA, exact Reel sources, credits, lazy local previews, offline coverage and no unproven metrics');
 
 const opening=html.match(/<section id="inicio"[\s\S]*?<\/section>/)?.[0];
-assert.ok(opening?.includes('dual-intro')&&opening.includes('Qual o seu <span>interesse?</span>'),'Compact dual opening is present');
+assert.ok(opening?.includes('dual-intro')&&opening.includes('Qual o seu interesse?'),'Compact dual opening is present');
 assert.equal((opening.match(/class="interest-card /g)||[]).length,2,'Two clear area choices');
 assert.ok(opening.includes('href="#marketing"')&&opening.includes('href="#programacao"'),'Both area choices use native anchors');
 assert.ok(!opening.includes('id="sculpture"'),'Decorative 3D no longer delays the entry choices');
@@ -83,3 +83,6 @@ const marketingCss=await readFile('marketing.css','utf8');
 assert.ok(marketingCss.includes('@media(prefers-reduced-motion:reduce)')&&marketingCss.includes('.interest-card,.interest-arrow{animation:none;transition:none;}'),'Entry animation respects reduced motion');
 assert.ok(!marketing.includes('↗'),'Marketing arrows are font-independent vectors');
 console.log('PASS: compact dual-area entry, native anchors, relocated illustration, no pinning and reduced-motion support');
+
+assert.ok(opening.indexOf('id="hero-title"')<opening.indexOf('id="interest-title"'),'Personal introduction precedes interest selector');
+assert.ok(opening.includes('Sou Adiel Alves.')&&opening.includes('Criação e tecnologia.'),'Personal presentation is retained');
