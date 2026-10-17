@@ -1,0 +1,295 @@
+/* Continuous native-scroll scenes. All enhancement selectors are scoped to
+   data-scroll-scenes so content remains usable before JavaScript and on failure. */
+html[data-scroll-scenes] .scene-actor {
+  opacity: var(--scene-opacity, 1);
+  transform: translate3d(0, var(--scene-y, 0px), 0);
+  transition: none;
+}
+html[data-scroll-scenes] .scene-actor:focus-within { opacity: 1; }
+html[data-scroll-scenes] .scene-word {
+  display: inline-block;
+  color: inherit;
+  transform: translate3d(0, var(--word-y, 0px), 0);
+  opacity: var(--word-opacity, 1);
+  transition: none;
+}
+html[data-scroll-scenes] .motion-hero {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  isolation: isolate;
+  z-index: 1;
+  border-inline: 0;
+  background: none;
+}
+html[data-scroll-scenes] .motion-hero-stage {
+  position: relative;
+  min-height: 720px;
+  overflow: visible;
+  isolation: isolate;
+  background: radial-gradient(ellipse at var(--hero-ambient-x, 50%) 40%, #23403738, transparent 67%);
+}
+html[data-scroll-scenes] .motion-hero-track { position: relative; overflow: visible; }
+html.scroll-scenes-pinned .motion-hero-track {
+  height: var(--hero-scene-height);
+}
+html.scroll-scenes-pinned .motion-hero-stage {
+  position: sticky;
+  top: var(--scene-header-height, 0px);
+  height: var(--hero-stage-height);
+  min-height: 0;
+}
+html[data-scroll-scenes] .motion-hero .hero-copy {
+  position: relative;
+  inset: auto;
+  z-index: 2;
+  max-width: 820px;
+  padding: clamp(38px, 6.4vh, 72px) 26px 118px;
+  transform: translate3d(0, var(--hero-copy-y, 0px), 0);
+}
+html[data-scroll-scenes] .motion-hero h1 {
+  font-size: clamp(59px, 6.1vw, 88px);
+  line-height: 1.07;
+  letter-spacing: -4px;
+}
+html[data-scroll-scenes] .motion-hero .hero-intro { margin-bottom: 31px; }
+html[data-scroll-scenes] .motion-hero .visual {
+  width: 78%;
+  height: 100%;
+  min-height: 0;
+  right: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+  transform: none;
+}
+/* The orbit is a bounded background detail, not the moving sculpture. */
+html[data-scroll-scenes] .motion-hero .visual-orbit { overflow: clip; }
+/* Keep the control and descriptive label anchored; only the artwork moves. */
+html[data-scroll-scenes] .motion-hero #sculpture,
+html[data-scroll-scenes] .motion-hero .sculpture-fallback {
+  transform: translate3d(0, var(--hero-visual-y, 0px), 0);
+  pointer-events: none;
+}
+html[data-scroll-scenes] .motion-hero .visual:before {
+  background: radial-gradient(ellipse at 65% 40%, #456c5445, transparent 65%);
+}
+html[data-scroll-scenes] .motion-hero .visual-label { top: auto; bottom: 98px; }
+html[data-scroll-scenes] .motion-hero .motion-toggle { top: auto; height: auto; min-height: 44px; bottom: 141px; z-index: 4; pointer-events: auto; transform: none; }
+html[data-scroll-scenes] .motion-hero > .hero-bottom {
+  position: relative;
+  inset: auto;
+  margin-top: 0;
+  background: transparent;
+  padding-inline: 26px;
+  transform: none;
+}
+html[data-scroll-scenes] .motion-hero > .hero-bottom > span {
+  display: inline-block;
+  transform: translate3d(0, var(--footer-text-y, 0px), 0);
+  opacity: var(--footer-text-opacity, 1);
+  text-shadow: 0 2px 10px var(--bg);
+}
+/* The sculpture may cross the section seam; text and links stay above it.
+   Avoid a new stacking context around the strip background, which would
+   otherwise act like a hard crop at the exact boundary we are crossing. */
+html[data-scroll-scenes] .motion-hero + .stack-strip {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  isolation: auto;
+  overflow: visible;
+  transform: none;
+  opacity: 1;
+  background: transparent;
+  border-color: transparent;
+  margin-top: var(--stack-clearance, 0px);
+}
+/* No slab or rules can cross the sculpture; breathing room is real layout. */
+html[data-scroll-scenes] .motion-hero + .stack-strip::before { content: none; }
+html[data-scroll-scenes] .motion-hero + .stack-strip > .wrap {
+  position: relative;
+  z-index: 2;
+  transform: translate3d(0, var(--stack-y, 0px), 0);
+  opacity: var(--stack-opacity, 1);
+  transition: none;
+}
+html[data-scroll-scenes] .motion-hero + .stack-strip > .wrap > span {
+  display: inline-block;
+  transform: translate3d(0, var(--stack-item-y, 0px), 0);
+  opacity: var(--stack-item-opacity, 1);
+  color: #d6e2d9;
+  text-shadow: 0 1px 5px #0b110e, 0 0 12px #0b110e;
+  transition: none;
+}
+html[data-scroll-scenes] .automation-story { z-index: 2; }
+
+/* The full project index and its controls always scroll in document flow.
+   Only the separate, approved editorial feature heading is a sticky anchor. */
+html[data-scroll-scenes] .projects > .index-heading,
+html[data-scroll-scenes] .projects > .project-tools,
+html[data-scroll-scenes] .projects > .result-count,
+html[data-scroll-scenes] .projects > .project-index {
+  position: relative;
+  inset: auto;
+  transform: none;
+}
+
+/* Each chapter keeps an anchor in view, while real content scrolls past it. */
+html[data-scroll-scenes] .automation-sticky {
+  position: sticky;
+  top: calc(var(--header-height, 0px) + 42px);
+  align-self: start;
+}
+html[data-scroll-scenes] .automation-sticky > h2 {
+  transform: translate3d(0, var(--story-title-y, 0px), 0);
+}
+html[data-scroll-scenes] .automation-step { min-height: 78svh; }
+html[data-scroll-scenes] .flow-energy { transition: none; }
+html[data-scroll-scenes] .motion-project-scene {
+  display: grid;
+  grid-template-columns: minmax(0, .76fr) minmax(0, 1.24fr);
+  gap: clamp(36px, 6vw, 86px);
+  align-items: start;
+  padding-bottom: 30px;
+}
+html[data-scroll-scenes] .motion-project-scene > .section-heading {
+  position: sticky;
+  top: calc(var(--header-height, 0px) + 65px);
+  display: block;
+  margin: 0;
+  transform: translate3d(0, var(--chapter-title-y, 0px), 0);
+  opacity: 1;
+  transition: none;
+}
+html[data-scroll-scenes] .motion-project-scene .section-heading h2 {
+  font-size: clamp(36px, 3.7vw, 54px);
+}
+html[data-scroll-scenes] .motion-project-scene .section-heading > p {
+  margin-top: 29px;
+  max-width: 360px;
+}
+html[data-scroll-scenes] .motion-project-cards { min-width: 0; padding-top: 6px; }
+html[data-scroll-scenes] .motion-project-scene .featured-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 92px;
+}
+html[data-scroll-scenes] .motion-project-scene .featured-card,
+html[data-scroll-scenes] .motion-project-scene .featured-lead {
+  grid-column: auto;
+  display: flex;
+  flex-direction: column;
+}
+html[data-scroll-scenes] .motion-project-scene .card-art {
+  height: 278px;
+  min-height: 0;
+  border-right: 0;
+  border-bottom: 1px solid #334337;
+}
+html[data-scroll-scenes] .motion-project-scene .featured-lead .card-art svg {
+  max-width: 470px;
+  height: 94%;
+}
+html[data-scroll-scenes] .motion-project-scene .card-body h3 {
+  font-size: 31px;
+}
+html[data-scroll-scenes] .motion-about-scene > div:first-child {
+  position: sticky;
+  top: calc(var(--header-height, 0px) + 72px);
+  align-self: start;
+}
+html[data-scroll-scenes] .motion-about-scene .about-detail {
+  padding-block: 48px 70px;
+}
+
+@media (min-width: 761px) and (max-width: 1020px) {
+  html[data-scroll-scenes] .motion-hero h1 { font-size: 65px; }
+  html[data-scroll-scenes] .motion-project-scene { gap: 38px; grid-template-columns: .8fr 1.2fr; }
+  html[data-scroll-scenes] .motion-project-scene .section-heading h2 { font-size: 38px; }
+  html[data-scroll-scenes] .motion-project-scene .card-body h3 { font-size: 28px; }
+}
+@media (max-width: 760px) {
+  html[data-scroll-scenes] .motion-hero-stage { min-height: 0; }
+  html[data-scroll-scenes] .motion-hero .hero-copy {
+    max-width: none;
+    padding: 260px 18px 116px;
+  }
+  html[data-scroll-scenes] .motion-hero h1 { font-size: clamp(39px, 7.9vw, 58px); letter-spacing: -2.3px; }
+  html[data-scroll-scenes] .motion-hero .hero-intro { margin-bottom: 24px; }
+  html[data-scroll-scenes] .motion-hero .visual {
+    width: 100%;
+    right: 0;
+    height: 410px;
+    top: -32px;
+  }
+  html[data-scroll-scenes] .motion-hero .visual-label { right: 26px; bottom: 65px; }
+  html[data-scroll-scenes] .motion-hero .motion-toggle { right: 25px; bottom: 99px; }
+  html[data-scroll-scenes] .motion-hero .hero-bottom { padding-inline: 18px; }
+  html[data-scroll-scenes] .automation-sticky {
+    position: sticky;
+    top: var(--header-height, 0px);
+    z-index: 3;
+    background: linear-gradient(var(--bg) 94%, transparent);
+    padding: 16px 0 22px;
+  }
+  html[data-scroll-scenes] .automation-sticky h2 { font-size: 28px; margin-bottom: 0; }
+  html[data-scroll-scenes] .automation-intro { display: none; }
+  html[data-scroll-scenes] .automation-sticky .flow-board { height: 145px; margin: 12px 0 3px; }
+  html[data-scroll-scenes] .automation-step {
+    min-height: 68svh;
+    padding: 95px 0 65px;
+    scroll-margin-top: 285px;
+  }
+  html[data-scroll-scenes] .motion-project-scene { display: block; padding: 0; }
+  html[data-scroll-scenes] .motion-project-scene > .section-heading {
+    position: relative;
+    top: auto;
+    margin-bottom: 42px;
+  }
+  html[data-scroll-scenes] .motion-project-scene .section-heading h2 { font-size: 38px; }
+  html[data-scroll-scenes] .motion-project-scene .section-heading > p { margin-top: 24px; max-width: none; }
+  html[data-scroll-scenes] .motion-project-scene .featured-grid { gap: 38px; }
+  html[data-scroll-scenes] .motion-project-scene .card-art { height: 235px; }
+  html[data-scroll-scenes] .motion-project-scene .card-body h3 { font-size: 28px; }
+  html[data-scroll-scenes] .motion-about-scene > div:first-child { position: relative; top: auto; }
+  html[data-scroll-scenes] .motion-about-scene .about-detail { padding: 0; }
+}
+@media (max-width: 420px) {
+  html[data-scroll-scenes] .motion-hero .hero-copy { padding: 238px 12px 111px; }
+  html[data-scroll-scenes] .motion-hero .visual { height: 380px; }
+  html[data-scroll-scenes] .motion-hero h1 { font-size: 39px; letter-spacing: -2.1px; }
+  html[data-scroll-scenes] .motion-hero .hero-bottom { padding-inline: 12px; }
+}
+@media (max-width: 360px) {
+  html[data-scroll-scenes] .motion-hero h1 { font-size: 34px; letter-spacing: -1.9px; }
+}
+/* Short viewports and enlarged text must retain natural, reachable controls. */
+@media (max-height: 679px) {
+  html[data-scroll-scenes] .automation-sticky,
+  html[data-scroll-scenes] .motion-project-scene > .section-heading,
+  html[data-scroll-scenes] .motion-about-scene > div:first-child { position: relative; top: auto; }
+}
+html.scroll-scenes-reduced .scene-actor,
+html.scroll-scenes-reduced .scene-word,
+html.scroll-scenes-reduced .hero-copy,
+html.scroll-scenes-reduced .visual,
+html.scroll-scenes-reduced #sculpture,
+html.scroll-scenes-reduced .sculpture-fallback,
+html.scroll-scenes-reduced .motion-hero > .hero-bottom > span,
+html.scroll-scenes-reduced .stack-strip::before,
+html.scroll-scenes-reduced .stack-strip > .wrap,
+html.scroll-scenes-reduced .stack-strip > .wrap > span,
+html.scroll-scenes-reduced .automation-sticky > h2,
+html.scroll-scenes-reduced .motion-project-scene > .section-heading { transform: none !important; opacity: 1 !important; }
+html.scroll-scenes-reduced .automation-sticky,
+html.scroll-scenes-reduced .motion-about-scene > div:first-child,
+html.scroll-scenes-reduced .motion-project-scene > .section-heading { position: relative; top: auto; }
+html.scroll-scenes-reduced .automation-step { min-height: 0; padding-block: 60px; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-scroll-scenes] .scene-actor,
+  html[data-scroll-scenes] .scene-word,
+  html[data-scroll-scenes] .stack-strip::before,
+  html[data-scroll-scenes] .stack-strip > .wrap,
+  html[data-scroll-scenes] .stack-strip > .wrap > span { transform: none !important; opacity: 1 !important; }
+}
