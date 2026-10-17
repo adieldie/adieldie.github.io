@@ -24,7 +24,7 @@ else {
    const channel=new MessageChannel();
    const cached=await new Promise((resolve,reject)=>{
     const timeout=setTimeout(()=>reject(new Error('timeout')),15000);
-    channel.port1.onmessage=event=>{clearTimeout(timeout);resolve(event.data?.ready===true&&event.data?.version==='adiel-portfolio-20261012-18');channel.port1.close();};
+    channel.port1.onmessage=event=>{clearTimeout(timeout);resolve(event.data?.ready===true&&event.data?.version==='adiel-portfolio-20261017-01');channel.port1.close();};
     worker.postMessage({type:'CHECK_OFFLINE'},[channel.port2]);
    });
    if(!cached)throw new Error('incomplete');

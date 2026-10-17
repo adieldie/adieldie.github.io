@@ -1,0 +1,49 @@
+/* Marketing is a scoped addition to the existing portfolio. */
+.marketing-section{border-bottom:1px solid var(--line);padding-block:104px;}
+.marketing-intro{display:grid;grid-template-columns:1.15fr 1fr;gap:72px;align-items:end;margin-bottom:48px;}
+.marketing-intro h2{font-size:clamp(38px,4.4vw,65px);line-height:1.06;letter-spacing:-2.7px;max-width:720px;margin-bottom:0;}
+.marketing-intro-copy p{max-width:460px;color:var(--muted);font-size:16px;line-height:1.8;margin-bottom:25px;}
+.marketing-intro-copy .button{gap:25px;min-height:48px;}
+.marketing-services{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 50px;padding:0;list-style:none;}
+.marketing-services li{font:11px monospace;letter-spacing:.03em;padding:11px 15px;border:1px solid var(--line);border-radius:99px;color:var(--muted);}
+.marketing-group-heading{display:flex;align-items:baseline;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding-top:20px;margin-bottom:24px;}
+.marketing-group-heading h3{font-size:21px;letter-spacing:-.5px;margin:0;}
+.marketing-group-heading p{font:10px monospace;line-height:1.7;letter-spacing:1px;color:var(--muted);margin:0;}
+.marketing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;}
+.marketing-card{min-width:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);}
+.marketing-art{display:block;position:relative;overflow:hidden;background:#111a1a;aspect-ratio:4/5;}
+.marketing-art img{display:block;width:100%;height:100%;object-fit:contain;transition:transform .35s ease;}
+.marketing-art:hover img{transform:scale(1.025);}
+.marketing-art-label{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:9px;background:#101916ed;color:#f0f8f1;border:1px solid #73917b85;border-radius:99px;padding:9px 12px;font:10px monospace;}
+.marketing-card-body{padding:24px;}
+.marketing-unit{margin:0 0 12px;color:var(--accent);font:10px monospace;letter-spacing:.8px;line-height:1.7;text-transform:uppercase;}
+.marketing-card h4{font-size:23px;letter-spacing:-.7px;line-height:1.2;margin:0 0 22px;font-weight:500;}
+.marketing-case{margin:0;}
+.marketing-case>div{margin-bottom:16px;}
+.marketing-case dt{font:10px monospace;letter-spacing:.6px;color:var(--text);text-transform:uppercase;margin-bottom:7px;}
+.marketing-case dd{font-size:13px;line-height:1.7;color:var(--muted);margin:0;}
+.marketing-card-body>.text-link{min-height:44px;line-height:1.5;border-top:1px solid var(--line);padding-top:14px;width:100%;margin-top:7px;color:var(--accent);}
+.marketing-videos{margin-top:55px;}
+.marketing-video .marketing-art{aspect-ratio:9/12;}
+.marketing-video .marketing-art img{object-fit:cover;}
+.marketing-play{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:#e4f4e8;color:#102219;font-size:17px;padding-left:3px;box-shadow:0 3px 14px #0004;}
+.marketing-video .marketing-art-label{left:50%;bottom:20px;transform:translateX(-50%);white-space:nowrap;padding:7px 15px 7px 7px;font:11px Arial,Helvetica,sans-serif;}
+.marketing-video .marketing-card-body{padding:22px;}
+.marketing-video h4{font-size:20px;margin-bottom:14px;}
+.marketing-video-summary{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:5px;}
+.marketing-source-note{font-size:12px;line-height:1.8;color:var(--muted);max-width:850px;margin:26px 0 0;}
+.marketing-cta{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:32px;margin-top:48px;border:1px solid var(--line);border-radius:12px;background:var(--panel-soft);}
+.marketing-cta h3{font-weight:500;font-size:27px;letter-spacing:-.7px;margin-bottom:8px;}
+.marketing-cta p{font-size:14px;line-height:1.7;margin:0;color:var(--muted);}
+.marketing-cta .button{flex-shrink:0;min-height:48px;}
+.marketing-profile-links{display:flex;gap:24px;flex-wrap:wrap;margin-top:23px;}
+.marketing-profile-links a{font-size:12px;min-height:44px;display:inline-flex;align-items:center;gap:10px;color:var(--muted);}
+.marketing-profile-links a:hover{color:var(--accent);}
+.hero-marketing-link{margin-top:18px;display:inline-flex;min-height:44px;align-items:center;color:var(--accent);font-size:13px;gap:18px;}
+@media(max-width:1050px){.marketing-intro{gap:35px;}.marketing-card-body{padding:20px;}.header nav{gap:16px;}.marketing-grid{gap:15px;}}
+@media(max-width:850px){.marketing-intro{grid-template-columns:1fr;gap:27px;}.marketing-intro-copy p{max-width:620px;}.marketing-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.marketing-card:last-child{grid-column:auto;}.marketing-cta{align-items:start;flex-direction:column;}.marketing-section{padding-block:72px;}}
+@media(max-width:600px){.marketing-section{padding-block:56px;}.marketing-intro h2{font-size:40px;letter-spacing:-1.7px;}.marketing-intro{margin-bottom:27px;}.marketing-intro-copy p{font-size:14px;}.marketing-services{margin-bottom:35px;gap:7px;}.marketing-services li{font-size:10px;padding:10px 12px;}.marketing-grid{grid-template-columns:1fr;gap:22px;}.marketing-card-body{padding:24px;}.marketing-art{aspect-ratio:4/5;}.marketing-video .marketing-art{aspect-ratio:4/4.5;}.marketing-group-heading{flex-direction:column;gap:8px;}.marketing-cta{padding:25px;}.marketing-cta h3{font-size:24px;}.marketing-videos{margin-top:38px;}.marketing-profile-links{gap:5px 20px;}.header nav{gap:12px;font-size:10px;}.hero-marketing-link{font-size:12px;margin-top:9px;}}
+@media(prefers-reduced-motion:reduce){.marketing-art img{transition:none;}.marketing-art:hover img{transform:none;}}
+
+.marketing-art-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.marketing-art-grid .marketing-art{aspect-ratio:1/1;}.programming-overview{padding-block:100px 38px;display:grid;grid-template-columns:1.15fr 1fr;gap:72px;align-items:end;}.programming-overview h2{font-size:clamp(38px,4.4vw,65px);letter-spacing:-2.7px;margin:0;}.programming-overview p:not(.eyebrow){color:var(--muted);font-size:16px;line-height:1.8;max-width:460px;}.programming-actions{display:flex;align-items:center;gap:25px;flex-wrap:wrap;}.hero-actions{flex-wrap:wrap;gap:18px;}
+@media(max-width:850px){.programming-overview{grid-template-columns:1fr;gap:25px;padding-block:70px 25px;}}@media(max-width:600px){.marketing-art-grid{grid-template-columns:1fr;}.programming-overview{padding-block:56px 20px;}.programming-overview h2{font-size:40px;letter-spacing:-1.7px;}.programming-overview p:not(.eyebrow){font-size:14px;}.hero-actions{gap:12px;}}

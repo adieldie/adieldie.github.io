@@ -52,3 +52,21 @@ assert.equal(projects.find(p=>p.id==='operacao-entregas').publicDemos.length,3,'
 assert.match(demos.find(d=>d.repositoryUrl.endsWith('/audit-response-demo')).limitations,/não foram compilados nem executados/);
 assert.match(demos.find(d=>d.repositoryUrl.endsWith('/operational-shift-variant')).limitations,/Não é um produto adicional/);
 console.log('PASS: ten unique demo references with explicit scope, technologies and experimental limitations');
+
+// Published creative work is additive: the technology catalog remains intact.
+const marketing = html.match(/<section class="marketing-section[\s\S]*?<\/section>/)?.[0];
+assert.ok(marketing,'Marketing section is present');
+assert.match(marketing,/id="marketing"/);
+assert.equal((html.match(/id="marketing"/g)||[]).length,1,'One direct marketing anchor');
+assert.ok(html.includes('href="#marketing">Marketing</a>'),'Marketing navigation is exposed');
+assert.ok(marketing.includes('Pedir um orçamento')&&marketing.includes('5575991170685'),'Budget CTA uses the existing approved contact');
+for(const code of ['DdKNCZBxa9W','DcPgQVksrak','DcY3M9_x502'])assert.ok(marketing.includes('https://www.instagram.com/reel/'+code+'/'),'Exact owner-supplied Reel URL');
+assert.match(marketing,/Gravação: @mara_teleeess/,'Original recording credit is retained');
+assert.ok(!marketing.includes('<iframe')&&!marketing.includes('<video'),'No new third-party player or autoplay');
+for(const m of marketing.matchAll(/<img[^>]+>/g)){
+ assert.match(m[0],/loading="lazy"/);assert.match(m[0],/alt="[^"]+"/);assert.match(m[0],/width="\d+" height="\d+"/);
+ const src=m[0].match(/src="([^"]+)"/)[1];await stat(src);assert.ok(sw.includes(src),'Marketing preview is cached offline');
+}
+assert.ok(!/\b\d+\s*(%|vendas|conversões|clientes|visualizações)\b/i.test(marketing),'No unsubstantiated performance metrics');
+assert.ok(!/MARKETING_CASES|MARKETING_ARTS/.test(marketing),'No placeholder sections remain');
+console.log('PASS: marketing anchor/CTA, exact Reel sources, credits, lazy local previews, offline coverage and no unproven metrics');

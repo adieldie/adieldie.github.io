@@ -73,3 +73,22 @@ The fixed header provides Sistema / Claro / Escuro. The default follows the syst
 ## Public demonstration links
 
 Project detail panels separately describe sanitized public excerpts: their own technologies, experimental stage and exclusions. A public excerpt does not expose or certify the full original application. Related operational variants stay under one project; the project count remains 25. External GitHub links require a connection even when the portfolio itself is saved offline. New links must be verified public before deployment.
+
+## Marketing e Criação
+
+The existing portfolio includes a dedicated `#marketing` section, linked from the main navigation and home introduction. Its styles are isolated in `marketing.css`; the technology catalog, playable lab and theme system remain unchanged.
+
+The section showcases selected published work, with local preview images, descriptive alt text and links to the original Instagram publications. Reels open on Instagram rather than starting a third-party player or autoplaying on this site. Offline storage includes the preview images; watching the original videos requires a connection. All budget links use the same approved personal WhatsApp contact already present in the portfolio and only open a visitor-controlled conversation.
+
+Keep brand identity distinct from the account that published a piece. Do not infer a creator's role solely from a person's appearance or an account mention. The Copão Drink Reel explicitly credits @adieldie for presentation/acting and editing and @mara_teleeess for recording; preserve those credits. Other Reel descriptions stay within the public caption and format, without implying unverified production roles. Do not add sales, reach, conversions or other outcome claims without supporting evidence.
+
+Confirmed Reel sources:
+- https://www.instagram.com/reel/DdKNCZBxa9W/
+- https://www.instagram.com/reel/DcPgQVksrak/
+- https://www.instagram.com/reel/DcY3M9_x502/
+
+Confirmed visual-work sources (Telebier Efapi branding, published by @telebierconcordia):
+- https://www.instagram.com/telebierconcordia/p/DdujSQBkQut/
+- https://www.instagram.com/telebierconcordia/p/DdC8GV1DYOU/
+
+These visual pieces are described as creative direction and AI-assisted creation, rather than hand illustration. Publication is the demonstrated deliverable; no commercial outcome is asserted. The `#programacao` overview and `#marketing` links separate the two areas while the hero and biography introduce both.
