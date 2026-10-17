@@ -92,3 +92,11 @@ Confirmed visual-work sources (Telebier Efapi branding, published by @telebierco
 - https://www.instagram.com/telebierconcordia/p/DdC8GV1DYOU/
 
 These visual pieces are described as creative direction and AI-assisted creation, rather than hand illustration. Publication is the demonstrated deliverable; no commercial outcome is asserted. The `#programacao` overview and `#marketing` links separate the two areas while the hero and biography introduce both.
+
+## Editorial redesign
+
+`editorial.css` defines the current black, warm-paper and orange direction. The personal introduction comes before the two area links. The portrait, creative work and project catalog are the existing public assets. The visual references guide hierarchy and composition only; no third-party biography, results, images or case studies are included.
+
+New visitors start in dark mode; an explicit local light/system preference is respected. The layout uses ordinary document scrolling with no pinned hero or opacity-based text reveal. Technology artwork and the game keep their original modules and controls.
+
+A review copy under `preview-redesign/` must be generated separately: add noindex, isolate the theme-storage key, omit the Meta Pixel, manifest and offline/service-worker initialization, and keep every asset relative to the preview directory. Do not replace the root page when publishing a review copy.

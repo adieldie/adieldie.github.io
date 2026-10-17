@@ -78,11 +78,17 @@ assert.ok(opening.includes('href="#marketing"')&&opening.includes('href="#progra
 assert.ok(!opening.includes('id="sculpture"'),'Decorative 3D no longer delays the entry choices');
 assert.ok(html.match(/<section class="programming-overview[\s\S]*?id="sculpture"[\s\S]*?<\/section>/),'3D work is retained with programming');
 const motion=await readFile('motion-scenes.js','utf8');
-assert.ok(motion.includes('let canPin = !compactIntro'),'Compact opening never pins or reserves a scroll runway');
+assert.ok(!motion.includes('scroll-scenes-pinned')&&!motion.includes('preventDefault'),'Editorial layout uses native flow without scroll interception');
 const marketingCss=await readFile('marketing.css','utf8');
 assert.ok(marketingCss.includes('@media(prefers-reduced-motion:reduce)')&&marketingCss.includes('.interest-card,.interest-arrow{animation:none;transition:none;}'),'Entry animation respects reduced motion');
 assert.ok(!marketing.includes('↗'),'Marketing arrows are font-independent vectors');
 console.log('PASS: compact dual-area entry, native anchors, relocated illustration, no pinning and reduced-motion support');
 
 assert.ok(opening.indexOf('id="hero-title"')<opening.indexOf('id="interest-title"'),'Personal introduction precedes interest selector');
-assert.ok(opening.includes('Sou Adiel Alves.')&&opening.includes('Criação e tecnologia.'),'Personal presentation is retained');
+assert.ok(opening.includes('Sou Adiel Alves.')&&opening.includes('Adiel Alves.</span>'),'Personal presentation is retained');
+
+const editorial=await readFile('editorial.css','utf8');
+assert.ok(html.includes('editorial.css?v='+release)&&sw.includes('editorial.css?v='+release),'Editorial design is versioned and cached');
+assert.ok(opening.includes('portrait-stage')&&opening.includes('assets/adiel-alves-linkedin.webp'),'Editorial hero uses the existing real portrait');
+assert.ok(!html.includes('Aswad')&&!html.includes('Helmi')&&!html.includes('Lorem ipsum'),'Reference author content is not copied');
+assert.ok(editorial.includes('prefers-reduced-motion'),'Editorial motion respects preferences');
