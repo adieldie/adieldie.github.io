@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+
+const css = await readFile('liquid-glass.css', 'utf8');
+const html = await readFile('index.html', 'utf8');
+const sw = await readFile('sw.js', 'utf8');
+const build = await readFile('build.mjs', 'utf8');
+const release = html.match(/liquid-glass\.css\?v=([^"']+)/)?.[1];
+assert.ok(release, 'Glass stylesheet loaded');
+assert.ok(html.indexOf('liquid-glass.css') > html.indexOf('editorial.css'), 'Additive final layer');
+assert.ok(sw.includes(`liquid-glass.css?v=${release}`), 'Offline cache includes the material');
+assert.ok(build.includes("'liquid-glass.css'"), 'Build includes the material');
+assert.ok(css.includes('-webkit-backdrop-filter:'), 'Safari-compatible filter prefix');
+assert.ok(css.includes('@supports not'), 'Opaque fallback for unsupported browsers');
+assert.ok(css.includes('prefers-reduced-transparency: reduce'), 'Reduced transparency option');
+assert.ok(css.includes('prefers-contrast: more'), 'High-contrast preference');
+assert.ok(css.includes('prefers-reduced-motion: reduce'), 'No new hover movement when reduced');
+assert.ok(css.includes(":root[data-theme='light']"), 'Light-theme glass tokens');
+assert.match(css, /\.header nav > a:not\(\.nav-contact\):focus-visible\s*\{\s*background: var\(--accent-soft\);\s*color: var\(--accent\);/, 'Keyboard focus uses the readable theme accent pair, not the older fixed dark background');
+assert.ok(!/outline\s*:\s*(?:none|0)\b/.test(css), 'Existing keyboard focus ring preserved');
+assert.ok(!css.includes('url('), 'No new remote resources');
+assert.ok(!css.includes('filter: url'), 'No distortion of text');
+console.log('PASS: glass release integration, offline/build, Safari prefix and accessibility fallbacks');
